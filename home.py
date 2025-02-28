@@ -1,8 +1,12 @@
-from PySide6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QStackedWidget, QHBoxLayout, QFrame, QLineEdit, QFormLayout)
+from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel,
+    QStackedWidget, QHBoxLayout, QFrame
+)
 from PySide6.QtCore import Qt
 import sys
 import socket
 import pickle
+import requests
 
 class HomeClient:
     def __init__(self, host='localhost', port=12345):
@@ -50,6 +54,9 @@ class HomePage(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
+        # Check CAS authentication on launch
+        self.check_login_status()
+
     def create_nav_bar(self):
         nav_bar = QFrame()
         nav_bar.setStyleSheet("""
@@ -86,19 +93,30 @@ class HomePage(QMainWindow):
         login_widget = QWidget()
         layout = QVBoxLayout()
 
-        form_layout = QFormLayout()
-        username_input = QLineEdit()
-        password_input = QLineEdit()
-        password_input.setEchoMode(QLineEdit.EchoMode.Password)
-        form_layout.addRow("Username:", username_input)
-        form_layout.addRow("Password:", password_input)
+        self.status_label = QLabel("Not logged in")
+        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        submit_button = QPushButton("Login")
-        layout.addLayout(form_layout)
-        layout.addWidget(submit_button)
+        login_button = QPushButton("Login with Yale CAS")
+        login_button.clicked.connect(self.cas_login)
+
+        layout.addWidget(self.status_label)
+        layout.addWidget(login_button)
         login_widget.setLayout(layout)
 
         return login_widget
+
+    def cas_login(self):
+        """Redirect user to CAS login."""
+        requests.get("http://localhost:5000/login")  # Calls CAS authentication
+        self.check_login_status()
+
+    def check_login_status(self):
+        """Check if the user is authenticated via CAS."""
+        try:
+            response = requests.get("http://localhost:5000/user").text
+            self.status_label.setText(response)
+        except requests.exceptions.RequestException:
+            self.status_label.setText("Error connecting to authentication server")
 
     def navigate_to(self, page_name):
         page = self.pages.get(page_name)
@@ -110,3 +128,4 @@ if __name__ == "__main__":
     window = HomePage()
     window.show()
     sys.exit(app.exec())
+
