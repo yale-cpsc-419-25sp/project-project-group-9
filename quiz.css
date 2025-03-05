@@ -1,0 +1,183 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General Styles */
+body {
+    font-family: 'Merriweather', Georgia, serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Ensure the form starts from the top of the screen */
+    height: 100vh;
+    padding: 20px; /* Add padding for spacing */
+    overflow: auto; /* Allow scrolling if needed */
+}
+
+/* Navbar Styles */
+nav {
+    background-color: #0F4D92;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure navbar is always on top */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #FFCC00;
+}
+
+/* Container */
+.container {
+    background-color: white;
+    width: 60%;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 80px; /* Add space below the navbar */
+}
+
+/* Title */
+h1 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+/* Form Layout */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #0F4D92; /* Consistent color */
+}
+
+.input-field, .textarea-field, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus, .textarea-field:focus, select:focus {
+    border-color: #0F4D92; /* Highlight on focus */
+}
+
+.textarea-field {
+    height: 100px;
+    resize: vertical;
+}
+
+/* Image Upload Section */
+#image-upload {
+    margin-bottom: 20px;
+}
+
+#image-upload input[type="file"] {
+    display: none; /* Hide default file input */
+}
+
+#image-upload label {
+    display: inline-block;
+    background-color: #0F4D92;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#image-upload label:hover {
+    background-color: #FFCC00;
+}
+
+/* Roles Section */
+.roles-section {
+    margin-bottom: 20px;
+}
+
+.roles-section p {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #0F4D92;
+}
+
+label input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.roles-section label {
+    font-size: 14px;
+}
+
+/* Button Styles */
+button.submit-btn {
+    background-color: #0F4D92;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button.submit-btn:hover {
+    background-color: #FFCC00; /* Change to accent color on hover */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .input-field, .textarea-field, select {
+        font-size: 12px;
+    }
+
+    nav a {
+        font-size: 1em;
+    }
+}
