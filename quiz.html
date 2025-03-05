@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentorship Quiz</title>
+    <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+    </header>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="mentors.html">Mentors</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+    </nav>
+
+    <div class="container">
+        <h1>Mentorship Quiz</h1>
+
+        <form action="#" method="post">
+            <div class="form-section">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" class="input-field">
+                
+                <label for="pronoun">Pronoun:</label>
+                <input type="text" id="pronoun" name="pronoun" class="input-field">
+
+                <label for="res-college">Residential College:</label>
+                <input type="text" id="res-college" name="res-college" class="input-field">
+                
+                <label for="college-year">College Year:</label>
+                <input type="text" id="college-year" name="college-year" class="input-field">
+
+                <label for="majors">Major(s):</label>
+                <input type="text" id="majors" name="majors" class="input-field">
+            </div>
+
+            <!-- Image Upload Section -->
+            <div id="image-upload">
+                <label for="headshot">Upload Headshot</label>
+                <input type="file" id="headshot" name="headshot" accept="image/jpeg">
+            </div>
+
+            <div class="form-section">
+                <label for="affinity-groups">Select Affinity Groups:</label>
+                <select id="affinity-groups" name="affinity-groups" class="input-field">
+                    <option value="International">International</option>
+                    <option value="FGLI">FGLI</option>
+                    <option value="BIPOC">BIPOC</option>
+                    <option value="LGBTQ+">LGBTQ+</option>
+                    <option value="WGI in STEM">WGI in STEM</option>
+                    <option value="PWD">PWD</option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label for="extracurriculars">Extracurriculars:</label>
+                <textarea id="extracurriculars" name="extracurriculars" class="textarea-field"></textarea>
+
+                <label for="interests">Interests:</label>
+                <textarea id="interests" name="interests" class="textarea-field"></textarea>
+
+                <label for="work-exp">Work Experience:</label>
+                <textarea id="work-exp" name="work-exp" class="textarea-field"></textarea>
+
+                <label for="mentorship-seeking">Seeking Mentorship On:</label>
+                <textarea id="mentorship-seeking" name="mentorship-seeking" class="textarea-field"></textarea>
+
+                <label for="mentorship-offering">Open to Offering Mentorship On:</label>
+                <textarea id="mentorship-offering" name="mentorship-offering" class="textarea-field"></textarea>
+
+                <label for="bio">2-Sentence Bio:</label>
+                <textarea id="bio" name="bio" class="textarea-field"></textarea>
+            </div>
+
+            <div class="roles-section">
+                <p>Roles:</p>
+                <label for="mentor">
+                    <input type="checkbox" id="mentor" name="role" value="Mentor"> Mentor
+                </label>
+                <label for="mentee">
+                    <input type="checkbox" id="mentee" name="role" value="Mentee"> Mentee
+                </label>
+                <label for="public">
+                    <input type="checkbox" id="public" name="role" value="Public"> Public
+                </label>
+                <label for="private">
+                    <input type="checkbox" id="private" name="role" value="Private"> Private
+                </label>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
