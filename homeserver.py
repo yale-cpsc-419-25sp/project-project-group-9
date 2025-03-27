@@ -17,7 +17,7 @@ cas = CAS(app, "/cas")
 app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
 app.config["CAS_AFTER_LOGIN"] = "home"
 
-def check_database_exists(db_path='mentorship_quiz.db'):
+def check_database_exists(db_path='schema.sql'):
     """Check if the database file exists."""
     if not os.path.exists(db_path):
         print(f"Error: The database file '{db_path}' does not exist.", file=sys.stderr)
@@ -45,6 +45,13 @@ def results():
         return render_template('profile.html')
     return redirect(url_for('login'))
 
+@app.route('/resources')
+def results():
+    """Results page, only accessible if user is authenticated."""
+    if "CAS_USERNAME" in session:
+        return render_template('resources.html')
+    return redirect(url_for('login'))
+
 @app.route("/login")
 def login():
     """Redirect to Yale CAS login."""
@@ -62,6 +69,8 @@ def user():
     if "CAS_USERNAME" in session:
         return f"Logged in as {session['CAS_USERNAME']}"
     return "Not logged in"
+
+
 
 def main():
     """Main function to start the Flask server."""
