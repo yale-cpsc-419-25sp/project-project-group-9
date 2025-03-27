@@ -39,18 +39,15 @@ def quiz():
     return redirect(url_for('login'))
 
 @app.route('/profile')
-def results():
-    """Results page, only accessible if user is authenticated."""
+def profile():
+    """Profile page, only accessible if user is authenticated."""
     if "CAS_USERNAME" in session:
         return render_template('profile.html')
     return redirect(url_for('login'))
 
 @app.route('/resources')
-def results():
-    """Results page, only accessible if user is authenticated."""
-    if "CAS_USERNAME" in session:
-        return render_template('resources.html')
-    return redirect(url_for('login'))
+def resources():
+    return render_template('resources.html')
 
 @app.route("/login")
 def login():
