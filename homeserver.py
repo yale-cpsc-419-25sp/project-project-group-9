@@ -1,34 +1,80 @@
-import socket
-import pickle
+import os
+import sys
+import argparse
+from flask import Flask, render_template, session, redirect, url_for
+from flask_cas import CAS
 
-class HomeServer:
-    def __init__(self, host='localhost', port=12345):
-        self.host = host
-        self.port = port
-        self.users = {"admin": "password123", "user": "1234"}  # Sample user database
+# Create the Flask app
+app = Flask(__name__)
 
-    def handle_request(self, data):
-        page = pickle.loads(data)
-        if page == "Take the Quiz!":
-            return pickle.dumps("Login Page Loaded")
-        return pickle.dumps(f"Page: {page} Loaded")
+# Flask session secret key (change this in production)
+app.secret_key = "your_secret_key"
 
-    def run(self):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-            server.bind((self.host, self.port))
-            server.listen(5)
-            print(f"Server running on {self.host}:{self.port}")
-            while True:
-                client, addr = server.accept()
-                with client:
-                    print(f"Connection from {addr}")
-                    data = client.recv(4096)
-                    if not data:
-                        continue
-                    response = self.handle_request(data)
-                    client.sendall(response)
+# Initialize CAS authentication
+cas = CAS(app, "/cas")
 
-if __name__ == "__main__":
-    server = HomeServer()
-    server.run()
+# Configure Yale's CAS
+app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
+app.config["CAS_AFTER_LOGIN"] = "home"
 
+def check_database_exists(db_path='mentorship_quiz.db'):
+    """Check if the database file exists."""
+    if not os.path.exists(db_path):
+        print(f"Error: The database file '{db_path}' does not exist.", file=sys.stderr)
+        sys.exit(1)
+
+# Define routes for different pages
+@app.route('/')
+def home():
+    """Home page, only accessible if user is authenticated."""
+    if "CAS_USERNAME" in session:
+        return render_template('home.html', user=session['CAS_USERNAME'])
+    return redirect(url_for('login'))
+
+@app.route('/quiz')
+def quiz():
+    """Quiz page, only accessible if user is authenticated."""
+    if "CAS_USERNAME" in session:
+        return render_template('quiz.html')
+    return redirect(url_for('login'))
+
+@app.route('/profile')
+def results():
+    """Results page, only accessible if user is authenticated."""
+    if "CAS_USERNAME" in session:
+        return render_template('profile.html')
+    return redirect(url_for('login'))
+
+@app.route("/login")
+def login():
+    """Redirect to Yale CAS login."""
+    return redirect(url_for("cas.login"))
+
+@app.route("/logout")
+def logout():
+    """Logout and clear session."""
+    session.clear()
+    return redirect(url_for("cas.logout"))
+
+@app.route("/user")
+def user():
+    """Check and return authenticated user."""
+    if "CAS_USERNAME" in session:
+        return f"Logged in as {session['CAS_USERNAME']}"
+    return "Not logged in"
+
+def main():
+    """Main function to start the Flask server."""
+    parser = argparse.ArgumentParser(description="Mentorship Quiz Application")
+    parser.add_argument('port', type=int, help='The port at which the server should listen')
+    args = parser.parse_args()
+
+    if args.port < 1 or args.port > 65535:
+        print("Error: The port must be between 1 and 65535.", file=sys.stderr)
+        sys.exit(1)
+
+    check_database_exists()
+    app.run(host='0.0.0.0', port=args.port, debug=True)
+
+if __name__ == '__main__':
+    main()
