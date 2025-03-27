@@ -1,9 +1,58 @@
+import sqlite3
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox,
-    QPushButton, QHBoxLayout, QTextEdit, QFormLayout, QDialog, QScrollArea
+    QPushButton, QHBoxLayout, QTextEdit, QFormLayout, QScrollArea
 )
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QFont, QColor
+from PySide6.QtGui import QFont
+
+from flask import Flask, render_template, request, redirect, url_for
+import sqlite3
+
+app = Flask(__name__)
+
+# Route for displaying the form
+@app.route('/')
+def quiz_form():
+    return render_template('quiz.html')
+
+# Route for handling form submission
+@app.route('/submit', methods=['POST'])
+def submit_quiz():
+    name = request.form.get("name")
+    pronoun = request.form.get("pronoun")
+    residential_college = request.form.get("residential_college")
+    college_year = request.form.get("college_year")
+    majors = request.form.get("majors")
+    affinity_group = request.form.get("affinity_group")
+    extracurriculars = request.form.get("extracurriculars")
+    interests = request.form.get("interests")
+    work_experience = request.form.get("work_experience")
+    seeking_mentorship = request.form.get("seeking_mentorship")
+    offering_mentorship = request.form.get("offering_mentorship")
+    bio = request.form.get("bio")
+    roles = ', '.join(request.form.getlist("roles"))
+
+    conn = sqlite3.connect("mentorship_quiz.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO users (name, pronoun, residential_college, college_year, majors, 
+                           affinity_group, extracurriculars, interests, work_experience, 
+                           seeking_mentorship, offering_mentorship, bio, roles)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (name, pronoun, residential_college, college_year, majors, affinity_group,
+          extracurriculars, interests, work_experience, seeking_mentorship,
+          offering_mentorship, bio, roles))
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('quiz_form'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 class QuizPage(QWidget):
     def __init__(self):
@@ -12,16 +61,14 @@ class QuizPage(QWidget):
         self.resize(800, 600)
 
         layout = QVBoxLayout()
-
-        # Basic Information Form Layout
         form_layout = QFormLayout()
+
         self.name_input = QLineEdit()
         self.pronoun_input = QLineEdit()
         self.res_college_input = QLineEdit()
         self.college_year_input = QLineEdit()
         self.majors_input = QLineEdit()
 
-        # Styling the form fields
         font = QFont("Arial", 12)
         for widget in [self.name_input, self.pronoun_input, self.res_college_input, self.college_year_input, self.majors_input]:
             widget.setFont(font)
@@ -33,18 +80,14 @@ class QuizPage(QWidget):
         form_layout.addRow(QLabel("College Year:"), self.college_year_input)
         form_layout.addRow(QLabel("Major(s):"), self.majors_input)
 
-        # Affinity Groups
         layout.addWidget(QLabel("Select Affinity Groups:"))
         self.affinity_groups = QComboBox()
-        self.affinity_groups.addItems([
-            "International", "FGLI", "BIPOC", "LGBTQ+", "WGI in STEM", "PWD"
-        ])
+        self.affinity_groups.addItems(["International", "FGLI", "BIPOC", "LGBTQ+", "WGI in STEM", "PWD"])
         self.affinity_groups.setEditable(True)
         self.affinity_groups.setFont(font)
         self.affinity_groups.setStyleSheet("padding: 5px; border-radius: 5px; border: 1px solid #ccc;")
         layout.addWidget(self.affinity_groups)
 
-        # Other Textboxes
         self.extracurriculars_input = QTextEdit()
         self.interests_input = QTextEdit()
         self.work_exp_input = QTextEdit()
@@ -52,7 +95,7 @@ class QuizPage(QWidget):
         self.mentorship_offering_input = QTextEdit()
         self.bio_input = QTextEdit()
 
-        for widget in [self.extracurriculars_input, self.interests_input, self.work_exp_input, 
+        for widget in [self.extracurriculars_input, self.interests_input, self.work_exp_input,
                        self.mentorship_seeking_input, self.mentorship_offering_input, self.bio_input]:
             widget.setFont(font)
             widget.setStyleSheet("padding: 10px; border-radius: 5px; border: 1px solid #ccc;")
@@ -64,7 +107,6 @@ class QuizPage(QWidget):
         form_layout.addRow("Open to Offering Mentorship On:", self.mentorship_offering_input)
         form_layout.addRow("2-Sentence Bio:", self.bio_input)
 
-        # Checkboxes Layout
         layout.addWidget(QLabel("Roles:"))
         self.mentor_check = QCheckBox("Mentor")
         self.mentee_check = QCheckBox("Mentee")
@@ -81,18 +123,15 @@ class QuizPage(QWidget):
         checkboxes.addWidget(self.public_check)
         checkboxes.addWidget(self.private_check)
 
-        # Submit Button
         submit_button = QPushButton("Submit")
         submit_button.clicked.connect(self.submit_quiz)
         submit_button.setFont(QFont("Arial", 14, QFont.Bold))
         submit_button.setStyleSheet("background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px;")
 
-        # Add all elements to the layout
         layout.addLayout(form_layout)
         layout.addLayout(checkboxes)
         layout.addWidget(submit_button)
 
-        # Add the main layout into a scrollable area
         scroll_area = QScrollArea()
         container_widget = QWidget()
         container_widget.setLayout(layout)
@@ -102,21 +141,6 @@ class QuizPage(QWidget):
         main_layout.addWidget(scroll_area)
 
         self.setLayout(main_layout)
-
-    def submit_quiz(self):
-        print("Name:", self.name_input.text())
-        print("Pronoun:", self.pronoun_input.text())
-        print("Residential College:", self.res_college_input.text())
-        print("College Year:", self.college_year_input.text())
-        print("Major(s):", self.majors_input.text())
-        print("Affinity Group:", self.affinity_groups.currentText())
-        print("Extracurriculars:", self.extracurriculars_input.toPlainText())
-        print("Interests:", self.interests_input.toPlainText())
-        print("Work Experience:", self.work_exp_input.toPlainText())
-        print("Seeking Mentorship On:", self.mentorship_seeking_input.toPlainText())
-        print("Open to Offering Mentorship On:", self.mentorship_offering_input.toPlainText())
-        print("Bio:", self.bio_input.toPlainText())
-        print("Roles:", self.get_selected_roles())
 
     def get_selected_roles(self):
         roles = []
@@ -129,3 +153,72 @@ class QuizPage(QWidget):
         if self.private_check.isChecked():
             roles.append("Private")
         return ", ".join(roles)
+
+    def submit_quiz(self):
+        user_data = {
+            "name": self.name_input.text(),
+            "pronoun": self.pronoun_input.text(),
+            "residential_college": self.res_college_input.text(),
+            "college_year": self.college_year_input.text(),
+            "majors": self.majors_input.text(),
+            "affinity_group": self.affinity_groups.currentText(),
+            "extracurriculars": self.extracurriculars_input.toPlainText(),
+            "interests": self.interests_input.toPlainText(),
+            "work_experience": self.work_exp_input.toPlainText(),
+            "seeking_mentorship": self.mentorship_seeking_input.toPlainText(),
+            "offering_mentorship": self.mentorship_offering_input.toPlainText(),
+            "bio": self.bio_input.toPlainText(),
+            "roles": self.get_selected_roles()
+        }
+        
+        self.save_to_database(user_data)
+
+    def save_to_database(self, data):
+        conn = sqlite3.connect("mentorship_quiz.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                pronoun TEXT,
+                residential_college TEXT,
+                college_year TEXT,
+                majors TEXT,
+                affinity_group TEXT,
+                extracurriculars TEXT,
+                interests TEXT,
+                work_experience TEXT,
+                seeking_mentorship TEXT,
+                offering_mentorship TEXT,
+                bio TEXT,
+                roles TEXT
+            )
+        """)
+
+        cursor.execute("""
+            INSERT INTO users (name, pronoun, residential_college, college_year, majors, 
+                               affinity_group, extracurriculars, interests, work_experience, 
+                               seeking_mentorship, offering_mentorship, bio, roles)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (data["name"], data["pronoun"], data["residential_college"], data["college_year"],
+              data["majors"], data["affinity_group"], data["extracurriculars"], data["interests"],
+              data["work_experience"], data["seeking_mentorship"], data["offering_mentorship"],
+              data["bio"], data["roles"]))
+
+        conn.commit()
+        conn.close()
+
+        print("User data saved successfully.")
+
+    def insert_user_with_image_path(name, email, yale_netid, password_hash, image_path):
+        conn = sqlite3.connect("your_database.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO Users (name, email, yale_netid, password_hash, headshot_path)
+            VALUES (?, ?, ?, ?, ?)
+        """, (name, email, yale_netid, password_hash, image_path))
+
+        conn.commit()
+        conn.close()
