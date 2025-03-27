@@ -16,6 +16,7 @@ CREATE TABLE Users (
     offering_mentorship TEXT,
     bio TEXT,
     roles TEXT,
+    headshot_path TEXT,  -- Stores the file path instead of the image
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
