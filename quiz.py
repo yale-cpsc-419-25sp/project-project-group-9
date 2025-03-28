@@ -9,6 +9,10 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'  # Define your upload folder
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}  # Define allowed image types
 
+if not os.path.exists(app.config['UPLOAD_FOLDER']): # CHANGED CODDE HERE 
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -19,21 +23,21 @@ def quiz_form():
 
 # Route for handling form submission
 @app.route('/submit', methods=['POST'])
-def submit_quiz():
+def submit_quiz():                                      # CHANGED CODDE HERE 
     # Get all the form data
     name = request.form.get("name")
     pronoun = request.form.get("pronoun")
     residential_college = request.form.get("residential_college")
     college_year = request.form.get("college_year")
-    majors = request.form.get("majors")
-    affinity_group = request.form.get("affinity_group")
+    majors = ', '.join(request.form.getlist("majors"))
+    affinity_group = ', '.join(request.form.getlist("affinity_group"))
     extracurriculars = request.form.get("extracurriculars")
-    interests = request.form.get("interests")
+    interests = ', '.join(request.form.getlist("interests"))
     work_experience = request.form.get("work_experience")
-    seeking_mentorship = request.form.get("seeking_mentorship")
-    offering_mentorship = request.form.get("offering_mentorship")
+    seeking_mentorship = ', '.join(request.form.getlist("seeking_mentorship"))
+    offering_mentorship = ', '.join(request.form.getlist("offering_mentorship"))
     bio = request.form.get("bio")
-    roles = ', '.join(request.form.getlist("roles"))
+    roles = ', '.join(request.form.getlist("roles")) 
 
     # Handle file upload
     if 'headshot' not in request.files:
@@ -47,7 +51,7 @@ def submit_quiz():
         file_path = None  # If no valid image, set to None
 
     # Insert data into the database
-    conn = sqlite3.connect("schema.sql")
+    conn = sqlite3.connect("bigsib-db")
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -63,6 +67,8 @@ def submit_quiz():
     user_id = cursor.lastrowid  # Get the ID of the newly inserted user
     conn.close()
 
+    print(f"New user ID: {user_id}")  # CHANGED CODDE HERE 
+
     # Redirect to the profile page with the user's ID
     return redirect(url_for('profile', user_id=user_id))
 
@@ -70,7 +76,7 @@ def submit_quiz():
 @app.route('/profile/<int:user_id>')
 def profile(user_id):
     # Fetch user data from the database using the user_id
-    conn = sqlite3.connect("schema.sql")
+    conn = sqlite3.connect("bigsib-db")
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
