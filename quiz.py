@@ -55,7 +55,7 @@ def submit_quiz():
         file.save(file_path)
 
     # Insert into Users table
-    conn = sqlite3.connect("bigsib.db")
+    conn = sqlite3.connect("lux.sqlite")
     cursor = conn.cursor()
 
     cursor.execute("""
