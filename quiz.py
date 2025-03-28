@@ -16,13 +16,24 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def get_or_create_id(conn, table, name_field, value):
+    id_columns = {
+        "Majors": "major_id",
+        "Affinity_Groups": "group_id",
+        "Interests": "interest_id",
+        "Mentorship_Topics": "topic_id",
+        "Roles": "role_id"
+    }
+
+    id_column = id_columns.get(table, f"{table[:-1].lower()}_id")
+
     cursor = conn.cursor()
-    cursor.execute(f"SELECT {table[:-1].lower()}_id FROM {table} WHERE name = ?", (value,))
+    cursor.execute(f"SELECT {id_column} FROM {table} WHERE {name_field} = ?", (value,))
     result = cursor.fetchone()
     if result:
         return result[0]
     else:
-        cursor.execute(f"INSERT INTO {table} (name) VALUES (?)", (value,))
+        cursor.execute(f"INSERT INTO {table} ({name_field}) VALUES (?)", (value,))
+        conn.commit()
         return cursor.lastrowid
 
 @app.route('/')
@@ -39,12 +50,12 @@ def submit_quiz():
     work_experience = request.form.get("work_experience")
     bio = request.form.get("bio")
 
-    majors = request.form.getlist("majors")
-    affinity_groups = request.form.getlist("affinity_group")
-    interests = request.form.getlist("interests")
-    seeking = request.form.getlist("seeking_mentorship")
-    offering = request.form.getlist("offering_mentorship")
-    roles = request.form.getlist("roles")
+    majors = request.form.getlist("majors[]")
+    affinity_groups = request.form.getlist("affinity_groups[]")
+    interests = request.form.getlist("interests[]")
+    seeking = request.form.getlist("mentorship_seeking[]")
+    offering = request.form.getlist("mentorship_offering[]")
+    roles = request.form.getlist("roles[]")
 
     # Handle headshot upload
     file = request.files.get('headshot')
@@ -96,20 +107,73 @@ def submit_quiz():
 
     return redirect(url_for('profile', user_id=user_id))
 
-@app.route('/profile/<int:user_id>')
-def profile(user_id):
-    conn = sqlite3.connect("bigsib.db")
+def fetch_user_data(user_id):
+    conn = sqlite3.connect("lux.sqlite")
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
+    # Basic user info
     cursor.execute("SELECT * FROM Users WHERE user_id = ?", (user_id,))
     user = cursor.fetchone()
 
+    # Join tables
+    def fetch_related(query, user_id):
+        cursor.execute(query, (user_id,))
+        return [row["name"] for row in cursor.fetchall()]
+
+    majors = fetch_related("""
+        SELECT name FROM Majors
+        JOIN User_Majors USING (major_id)
+        WHERE user_id = ?
+    """, user_id)
+
+    affinity_groups = fetch_related("""
+        SELECT name FROM Affinity_Groups
+        JOIN User_Affinity_Groups USING (group_id)
+        WHERE user_id = ?
+    """, user_id)
+
+    interests = fetch_related("""
+        SELECT name FROM Interests
+        JOIN User_Interests USING (interest_id)
+        WHERE user_id = ?
+    """, user_id)
+
+    seeking = fetch_related("""
+        SELECT name FROM Mentorship_Topics
+        JOIN User_Seeking_Mentorship USING (topic_id)
+        WHERE user_id = ?
+    """, user_id)
+
+    offering = fetch_related("""
+        SELECT name FROM Mentorship_Topics
+        JOIN User_Offering_Mentorship USING (topic_id)
+        WHERE user_id = ?
+    """, user_id)
+
+    roles = fetch_related("""
+        SELECT name FROM Roles
+        JOIN User_Roles USING (role_id)
+        WHERE user_id = ?
+    """, user_id)
+
     conn.close()
 
-    if user:
-        return render_template('profile.html', user=user)
-    else:
-        return "User not found", 404
+    return {
+        "user": user,
+        "majors": majors,
+        "affinity_groups": affinity_groups,
+        "interests": interests,
+        "seeking": seeking,
+        "offering": offering,
+        "roles": roles
+    }
+
+@app.route('/profile/<int:user_id>')
+def profile(user_id):
+    data = fetch_user_data(user_id)
+    data["profile"] = data.pop("user")  # Rename key
+    return render_template("profile.html", **data)
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
