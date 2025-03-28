@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile['name'] }}'s Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}"></head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <h1>Your Profile</h1>
+        <button class="edit-btn">Edit</button> <!-- Edit button added -->
+    </header>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="mentors.html">Find a Mentor</a>
+        <a href="resources.html">Resources</a>
+        <a href="community.html">Community</a>
+        <a href="quiz.html">Take the Quiz</a>
+        <a href="login.html">Login</a>
+        <a href="profile.html">Profile</a>
+    </nav>
+    
+    <div class="profile-container">
+        <!-- Top Section: Name, Image & Bio -->
+        <div class="profile-header">
+            <h1 class="profile-name">{{ profile['name'] }}</h1>
+            <div class="profile-top">
+                <img src="{{ profile['headshot_path'] }}" alt="Headshot">
+                <p>{{ profile['name'] }}</p>
+                <p>{{ profile['pronoun'] }}</p>
+            </div>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="profile-details">
+            <h2>About</h2>
+            <p><strong>Pronouns:</strong> {{ profile['pronoun'] }}</p>
+            <p><strong>Residential College:</strong> {{ profile['res_college'] }}</p>
+            <p><strong>College Year:</strong> {{ profile['college_year'] }}</p>
+            <p><strong>Majors:</strong> {{ majors | join(', ') }}</p>
+
+            <h2>Affinity Groups</h2>
+            <p>{{ affinity_groups | join(', ') }}</p>
+
+
+            <h2>Extracurriculars</h2>
+            <p>{{ profile['extracurriculars'] }}</p>
+
+            <h2>Interests</h2>
+            <p>{{ interests | join(', ') }}</p>
+
+            <h2>Work Experience</h2>
+            <p>{{ profile['work_exp'] }}</p>
+
+            <h2>Seeking Mentorship On</h2>
+            <p>{{ seeking | join(', ') }}</p>
+
+            <h2>Open to Offering Mentorship On</h2>
+            <p>{{ offering | join(', ') }}</p>
+
+            <h2>Roles</h2>
+            <p>{{ roles | join(', ') }}</p>
+        </div>
+    </div>
+</body>
+</html>
