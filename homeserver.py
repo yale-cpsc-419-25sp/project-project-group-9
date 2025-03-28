@@ -17,7 +17,7 @@ cas = CAS(app, "/cas")
 app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
 app.config["CAS_AFTER_LOGIN"] = "home"
 
-def check_database_exists(db_path='lux.sqlite'):
+def check_database_exists(db_path='bigsib.db'):
     """Check if the database file exists."""
     if not os.path.exists(db_path):
         print(f"Error: The database file '{db_path}' does not exist.", file=sys.stderr)
