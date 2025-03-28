@@ -49,6 +49,10 @@ def profile():
 def resources():
     return render_template('resources.html')
 
+@app.route('/mentors')
+def mentors():
+    return render_template('mentors.html')
+
 @app.route("/login")
 def login():
     """Redirect to Yale CAS login."""
