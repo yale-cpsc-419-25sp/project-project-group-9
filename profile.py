@@ -23,16 +23,16 @@ def profile(user_id):
                 'pronoun': user[2],
                 'res_college': user[3],
                 'college_year': user[4],
-                'majors': user[5],
-                'affinity_groups': user[6].split(', ') if user[6] else [],  # Safely split if not None
+                'majors': user[5].split(', ') if user[5] else [],  # Split majors if not None
+                'affinity_groups': user[6].split(', ') if user[6] else [],  # Split affinity_groups if not None
                 'extracurriculars': user[7],
-                'interests': user[8],
-                'work_exp': user[9],
-                'mentorship_seeking': user[10],
-                'mentorship_offering': user[11],
-                'bio': user[12],
-                'roles': user[13].split(', ') if user[13] else [],  # Safely split if not None
-                'headshot': user[14] if user[14] else 'default.jpg'  # If no headshot, use a default image
+                'interests': user[8].split(', ') if user[8] else [],  # Split interests if not None
+                'work_exp': user[9], 
+                'mentorship_seeking': user[10].split(', ') if user[10] else [],  # Split mentorship_seeking if not None
+                'mentorship_offering': user[11].split(', ') if user[11] else [],  # Split mentorship_offering if not None
+                'bio': user[12] if user[12] else '',  # Keep bio as is (assuming it's a plain string)
+                'roles': user[13].split(', ') if user[13] else [],  # Split roles if not None
+                'headshot': user[14] if user[14] else 'default.jpg'  # Default image if no headshot
             }
 
             # Pass profile data to the template
