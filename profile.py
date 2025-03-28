@@ -8,7 +8,7 @@ app = Flask(__name__)
 def profile(user_id):
     # Connect to the database and fetch user data based on user_id
     try:
-        conn = sqlite3.connect("bigsib-db.db")  # Replace with your actual DB file
+        conn = sqlite3.connect("lux.sqlite")  # Replace with your actual DB file
         cursor = conn.cursor()
 
         # Query the user data from the database
