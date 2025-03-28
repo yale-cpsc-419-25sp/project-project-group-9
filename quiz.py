@@ -6,81 +6,104 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 # Set up file upload configurations
-app.config['UPLOAD_FOLDER'] = 'uploads/'  # Define your upload folder
-app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}  # Define allowed image types
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']): # CHANGED CODDE HERE 
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-# Route for displaying the form
+def get_or_create_id(conn, table, name_field, value):
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT {table[:-1].lower()}_id FROM {table} WHERE name = ?", (value,))
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    else:
+        cursor.execute(f"INSERT INTO {table} (name) VALUES (?)", (value,))
+        return cursor.lastrowid
+
 @app.route('/')
 def quiz_form():
     return render_template('quiz.html')
 
-# Route for handling form submission
 @app.route('/submit', methods=['POST'])
-def submit_quiz():                                      # CHANGED CODDE HERE 
-    # Get all the form data
+def submit_quiz():
     name = request.form.get("name")
     pronoun = request.form.get("pronoun")
     residential_college = request.form.get("residential_college")
     college_year = request.form.get("college_year")
-    majors = ', '.join(request.form.getlist("majors"))
-    affinity_group = ', '.join(request.form.getlist("affinity_group"))
     extracurriculars = request.form.get("extracurriculars")
-    interests = ', '.join(request.form.getlist("interests"))
     work_experience = request.form.get("work_experience")
-    seeking_mentorship = ', '.join(request.form.getlist("seeking_mentorship"))
-    offering_mentorship = ', '.join(request.form.getlist("offering_mentorship"))
     bio = request.form.get("bio")
-    roles = ', '.join(request.form.getlist("roles")) 
 
-    # Handle file upload
-    if 'headshot' not in request.files:
-        return redirect(request.url)
-    file = request.files['headshot']
+    majors = request.form.getlist("majors")
+    affinity_groups = request.form.getlist("affinity_group")
+    interests = request.form.getlist("interests")
+    seeking = request.form.getlist("seeking_mentorship")
+    offering = request.form.getlist("offering_mentorship")
+    roles = request.form.getlist("roles")
+
+    # Handle headshot upload
+    file = request.files.get('headshot')
+    file_path = None
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-    else:
-        file_path = None  # If no valid image, set to None
 
-    # Insert data into the database
-    conn = sqlite3.connect("bigsib-db")
+    # Insert into Users table
+    conn = sqlite3.connect("bigsib.db")
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO users (name, pronoun, residential_college, college_year, majors, 
-                           affinity_group, extracurriculars, interests, work_experience, 
-                           seeking_mentorship, offering_mentorship, bio, roles, headshot_path)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (name, pronoun, residential_college, college_year, majors, affinity_group,
-          extracurriculars, interests, work_experience, seeking_mentorship,
-          offering_mentorship, bio, roles, file_path))
+        INSERT INTO Users (name, pronoun, residential_college, college_year,
+                           headshot_path, extracurriculars, work_experience, bio)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (name, pronoun, residential_college, college_year,
+          file_path, extracurriculars, work_experience, bio))
+
+    user_id = cursor.lastrowid
+    # Insert into join tables
+    for major in majors:
+        major_id = get_or_create_id(conn, "Majors", "name", major)
+        cursor.execute("INSERT INTO User_Majors (user_id, major_id) VALUES (?, ?)", (user_id, major_id))
+
+    for group in affinity_groups:
+        group_id = get_or_create_id(conn, "Affinity_Groups", "name", group)
+        cursor.execute("INSERT INTO User_Affinity_Groups (user_id, group_id) VALUES (?, ?)", (user_id, group_id))
+
+    for interest in interests:
+        interest_id = get_or_create_id(conn, "Interests", "name", interest)
+        cursor.execute("INSERT INTO User_Interests (user_id, interest_id) VALUES (?, ?)", (user_id, interest_id))
+
+    for topic in seeking:
+        topic_id = get_or_create_id(conn, "Mentorship_Topics", "name", topic)
+        cursor.execute("INSERT INTO User_Seeking_Mentorship (user_id, topic_id) VALUES (?, ?)", (user_id, topic_id))
+
+    for topic in offering:
+        topic_id = get_or_create_id(conn, "Mentorship_Topics", "name", topic)
+        cursor.execute("INSERT INTO User_Offering_Mentorship (user_id, topic_id) VALUES (?, ?)", (user_id, topic_id))
+
+    for role in roles:
+        role_id = get_or_create_id(conn, "Roles", "name", role)
+        cursor.execute("INSERT INTO User_Roles (user_id, role_id) VALUES (?, ?)", (user_id, role_id))
 
     conn.commit()
-    user_id = cursor.lastrowid  # Get the ID of the newly inserted user
     conn.close()
 
-    print(f"New user ID: {user_id}")  # CHANGED CODDE HERE 
-
-    # Redirect to the profile page with the user's ID
     return redirect(url_for('profile', user_id=user_id))
 
-# Route for displaying the user's profile
 @app.route('/profile/<int:user_id>')
 def profile(user_id):
-    # Fetch user data from the database using the user_id
-    conn = sqlite3.connect("bigsib-db")
+    conn = sqlite3.connect("bigsib.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    cursor.execute("SELECT * FROM Users WHERE user_id = ?", (user_id,))
     user = cursor.fetchone()
+
     conn.close()
 
     if user:
@@ -89,4 +112,5 @@ def profile(user_id):
         return "User not found", 404
 
 if __name__ == '__main__':
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(debug=True)
