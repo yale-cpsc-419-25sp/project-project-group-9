@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>BigSib Resources - Yale Mentorship</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400, 700">
 </head>
 <body>
@@ -12,14 +12,14 @@
         <p>Your Yale Mentorship and Opportunities Hub</p>
     </header>
     <nav>
-        <a href="home.html">Home</a>
-        <a href="mentors.html">Find a Mentor</a>
-        <a href="resources.html">Resources</a>
-        <a href="community.html">Community</a>
-        <a href="quiz.html">Take the Quiz</a>
-        <a href="login.html">Login</a>
-        <a href="profile.html">Profile</a>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('mentors') }}">Find a Mentor</a>
+        <a href="{{ url_for('resources') }}">Resources</a>
+        <a href="#">Community</a> <!-- Add actual route when available -->
+        <a href="{{ url_for('quiz') }}">Take the Quiz</a>
+        <a href="{{ url_for('login') }}">Login</a>
     </nav>
+
     <div class="container">
         <!--Upcoming Events Section-->
         <section class="section">
