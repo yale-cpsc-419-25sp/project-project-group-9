@@ -2,22 +2,20 @@ import os
 import sys
 import argparse
 from flask import Flask, render_template, session, redirect, url_for
-from flask_cas import CAS
+from quiz import quiz_form, submit_quiz, profile as profile_route
+
 
 # Create the Flask app
 app = Flask(__name__)
 
+app.add_url_rule('/quiz', view_func=quiz_form)
+app.add_url_rule('/submit', view_func=submit_quiz, methods=['POST'])
+app.add_url_rule('/profile/<int:user_id>', view_func=profile_route)
+
 # Flask session secret key (change this in production)
 app.secret_key = "your_secret_key"
 
-# Initialize CAS authentication
-cas = CAS(app, "/cas")
-
-# Configure Yale's CAS
-app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
-app.config["CAS_AFTER_LOGIN"] = "home"
-
-def check_database_exists(db_path='bigsib.db'):
+def check_database_exists(db_path='lux.sqlite'):
     """Check if the database file exists."""
     if not os.path.exists(db_path):
         print(f"Error: The database file '{db_path}' does not exist.", file=sys.stderr)
@@ -26,24 +24,13 @@ def check_database_exists(db_path='bigsib.db'):
 # Define routes for different pages
 @app.route('/')
 def home():
-    """Home page, only accessible if user is authenticated."""
-    if "CAS_USERNAME" in session:
-        return render_template('home.html', user=session['CAS_USERNAME'])
-    return redirect(url_for('login'))
+    """Home page."""
+    return render_template('home.html')
 
 @app.route('/quiz')
 def quiz():
-    """Quiz page, only accessible if user is authenticated."""
-    if "CAS_USERNAME" in session:
-        return render_template('quiz.html')
-    return redirect(url_for('login'))
-
-@app.route('/profile')
-def profile():
-    """Profile page, only accessible if user is authenticated."""
-    if "CAS_USERNAME" in session:
-        return render_template('profile.html')
-    return redirect(url_for('login'))
+    """Quiz page."""
+    return render_template('quiz.html')
 
 @app.route('/resources')
 def resources():
@@ -55,14 +42,15 @@ def mentors():
 
 @app.route("/login")
 def login():
-    """Redirect to Yale CAS login."""
-    return redirect(url_for("cas.login"))
+    """Mock login route for local testing."""
+    session['CAS_USERNAME'] = 'testuser'
+    return redirect(url_for('home'))
 
 @app.route("/logout")
 def logout():
     """Logout and clear session."""
     session.clear()
-    return redirect(url_for("cas.logout"))
+    return redirect(url_for('home'))
 
 @app.route("/user")
 def user():
@@ -70,7 +58,6 @@ def user():
     if "CAS_USERNAME" in session:
         return f"Logged in as {session['CAS_USERNAME']}"
     return "Not logged in"
-
 
 
 def main():
