@@ -128,4 +128,3 @@ if __name__ == "__main__":
     window = HomePage()
     window.show()
     sys.exit(app.exec())
-
