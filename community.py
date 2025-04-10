@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 
 community_bp = Blueprint("community", __name__)
-
-# In-memory store of posts
 posts_db = []
 
 @community_bp.route("/community")
