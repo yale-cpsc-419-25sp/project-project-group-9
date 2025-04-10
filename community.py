@@ -1,55 +1,32 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Literal
-from uuid import uuid4
+from flask import Blueprint, render_template, request, redirect, url_for
 
-app = FastAPI(title="Bazinga Community Board")
+community_bp = Blueprint("community", __name__)
 
-# User roles
-UserRole = Literal["mentor", "mentee"]
-
-# In-memory store
+# In-memory store of posts
 posts_db = []
 
-# Post model
-class Post(BaseModel):
-    id: str
-    author_name: str
-    role: UserRole
-    title: str
-    content: str
+@community_bp.route("/community")
+def community_board():
+    """Show all posts."""
+    return render_template("community.html", posts=posts_db)
 
-class PostCreate(BaseModel):
-    author_name: str
-    role: UserRole
-    title: str
-    content: str
+@community_bp.route("/post", methods=["GET", "POST"])
+def create_post():
+    """Create a new post."""
+    if request.method == "POST":
+        author_name = request.form.get("author_name")
+        role = request.form.get("role")
+        title = request.form.get("title")
+        content = request.form.get("content")
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Community Board! Visit /posts to see all discussions."}
+        if author_name and role and title and content:
+            post = {
+                "author_name": author_name,
+                "role": role,
+                "title": title,
+                "content": content
+            }
+            posts_db.append(post)
+            return redirect(url_for("community.community_board"))
 
-@app.post("/posts", response_model=Post)
-def create_post(post: PostCreate):
-    new_post = Post(id=str(uuid4()), **post.dict())
-    posts_db.append(new_post)
-    return new_post
-
-@app.get("/posts", response_model=List[Post])
-def get_all_posts(role: UserRole = None):
-    if role:
-        return [post for post in posts_db if post.role == role]
-    return posts_db
-
-@app.get("/posts/{post_id}", response_model=Post)
-def get_post(post_id: str):
-    for post in posts_db:
-        if post.id == post_id:
-            return post
-    raise HTTPException(status_code=404, detail="Post not found")
-
-@app.delete("/posts/{post_id}")
-def delete_post(post_id: str):
-    global posts_db
-    posts_db = [post for post in posts_db if post.id != post_id]
-    return {"message": f"Post {post_id} deleted"}
+    return render_template("create_post.html")
