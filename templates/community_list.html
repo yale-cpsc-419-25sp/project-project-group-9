@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Communities</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <div class="community-container">
+    <h1>Community Pages</h1>
+    <p>Pick a community to view its discussion board.</p>
+
+    <ul class="community-list">
+      {% for c in communities %}
+        <li class="community-item">
+          <h2>{{ c.name }}</h2>
+          <p class="community-description">{{ c.description or "No description" }}</p>
+          <a class="view-posts-link" 
+             href="{{ url_for('community_bp.view_community', community_id=c.community_id) }}">
+            View Posts
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</body>
+</html>

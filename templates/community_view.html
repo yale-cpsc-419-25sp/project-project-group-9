@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ community.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <div class="community-container">
+    <!-- Community header and description -->
+    <div class="community-header">
+      <h1>{{ community.name }}</h1>
+      <p class="community-description">{{ community.description }}</p>
+    </div>
+
+    <!-- Filter form -->
+    <form class="filter-form" method="GET">
+      <label for="post_type">Filter by type:</label>
+      <select name="post_type" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="motivational"   {% if selected_post_type == 'motivational'   %}selected{% endif %}>Motivational</option>
+        <option value="job posting"    {% if selected_post_type == 'job posting'    %}selected{% endif %}>Job Posting</option>
+        <option value="resource"       {% if selected_post_type == 'resource'       %}selected{% endif %}>Resource</option>
+        <option value="event"          {% if selected_post_type == 'event'          %}selected{% endif %}>Event</option>
+        <option value="interpersonal"  {% if selected_post_type == 'interpersonal'  %}selected{% endif %}>Interpersonal</option>
+      </select>
+    </form>
+
+    <!-- Create new post button -->
+    <p>
+      <a class="create-post-btn"
+         href="{{ url_for('community_bp.new_post', community_id=community.community_id) }}">
+        Create New Post
+      </a>
+    </p>
+
+    {% if posts %}
+      <ul class="post-list">
+      {% for p in posts %}
+        <li>
+          <strong>
+            <a href="{{ url_for('community_bp.view_post', community_id=community.community_id, post_id=p.post_id) }}">
+              {{ p.title }}
+            </a>
+          </strong>
+          <br>
+          <em>by {{ p.author_name }} | {{ p.post_type }} | {{ p.created_at }}</em>
+        </li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>No posts have been created yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

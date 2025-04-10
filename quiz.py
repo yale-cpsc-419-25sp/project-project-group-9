@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads/'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']): # CHANGED CODDE HERE 
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
@@ -23,9 +23,7 @@ def get_or_create_id(conn, table, name_field, value):
         "Mentorship_Topics": "topic_id",
         "Roles": "role_id"
     }
-
     id_column = id_columns.get(table, f"{table[:-1].lower()}_id")
-
     cursor = conn.cursor()
     cursor.execute(f"SELECT {id_column} FROM {table} WHERE {name_field} = ?", (value,))
     result = cursor.fetchone()
@@ -65,7 +63,6 @@ def submit_quiz():
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
-    # Insert into Users table
     conn = sqlite3.connect("lux.sqlite")
     cursor = conn.cursor()
 
@@ -116,7 +113,7 @@ def fetch_user_data(user_id):
     cursor.execute("SELECT * FROM Users WHERE user_id = ?", (user_id,))
     user = cursor.fetchone()
 
-    # Join tables
+    # Helper function to fetch related names
     def fetch_related(query, user_id):
         cursor.execute(query, (user_id,))
         return [row["name"] for row in cursor.fetchall()]
@@ -172,7 +169,7 @@ def fetch_user_data(user_id):
 @app.route('/profile/<int:user_id>')
 def profile(user_id):
     data = fetch_user_data(user_id)
-    data["profile"] = data.pop("user")  # Rename key
+    data["profile"] = data.pop("user")  
     return render_template("profile.html", **data)
 
 if __name__ == '__main__':

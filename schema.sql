@@ -87,3 +87,31 @@ CREATE TABLE User_Roles (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES Roles(role_id) ON DELETE CASCADE
 );
+
+-- Tables for community discussions
+
+CREATE TABLE IF NOT EXISTS Communities (
+    community_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name           TEXT NOT NULL,
+    description    TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Community_Posts (
+    post_id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    community_id   INTEGER NOT NULL,
+    user_id        INTEGER NOT NULL,
+    title          TEXT NOT NULL,
+    content        TEXT NOT NULL,
+    post_type      TEXT NOT NULL,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (community_id) REFERENCES Communities(community_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+-- Some example communities
+INSERT INTO Communities (name, description)
+VALUES 
+    ('Software Engineering', 'Discuss software dev, internships, hackathons, etc.'),
+    ('Pre-Med', 'Everything about medical school, MCAT, volunteering'),
+    ('Public Service', 'Non-profits, activism, community service');

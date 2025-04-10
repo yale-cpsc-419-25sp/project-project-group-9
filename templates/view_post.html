@@ -1,0 +1,30 @@
+<!-- templates/view_post.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ post.title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+  <div class="community-container">
+    <h1>{{ post.title }}</h1>
+    <p class="post-meta">
+      <em>by {{ post.author_name }} | {{ post.post_type }} | {{ post.created_at }}</em>
+    </p>
+    <hr>
+    <div class="post-content">
+      <p>{{ post.content }}</p>
+    </div>
+    <hr>
+    <p>
+      <a class="back-link"
+         href="{{ url_for('community_bp.view_community', community_id=community.community_id) }}">
+        Back to {{ community.name }}
+      </a>
+    </p>
+  </div>
+
+</body>
+</html>

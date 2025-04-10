@@ -104,3 +104,152 @@ footer {
     padding: 5px;
     margin-top: 40px;
   }
+
+  /*************************************************************
+ * COMMUNITY PAGES STYLING
+ *************************************************************/
+
+/* Main container for community pages */
+.community-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+  
+  /* Headings and text */
+  .community-container h1 {
+    margin-top: 0;
+  }
+  .community-description {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* COMMUNITY LIST PAGE */
+  .community-list {
+    list-style: none;
+    padding: 0;
+  }
+  .community-list .community-item {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .community-list .community-item h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+  }
+  .view-posts-link {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 0.5rem;
+  }
+  .view-posts-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* COMMUNITY VIEW PAGE */
+  .community-header {
+    margin-bottom: 1rem;
+  }
+  .filter-form {
+    margin: 1rem 0;
+    display: inline-block;
+  }
+  .filter-form select {
+    padding: 0.25rem;
+    margin-left: 0.25rem;
+  }
+  .create-post-btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  .create-post-btn:hover {
+    background-color: #2980b9;
+  }
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .post-list li {
+    background-color: #f9f9f9;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  .post-list li strong a {
+    color: #2c3e50;
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+  .post-list li strong a:hover {
+    text-decoration: underline;
+  }
+  .post-list li em {
+    color: #777;
+    font-size: 0.9rem;
+  }
+  
+  /* NEW POST PAGE */
+  .new-post-form .form-group {
+    margin-bottom: 1rem;
+  }
+  .new-post-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .new-post-form input[type="text"], 
+  .new-post-form textarea, 
+  .new-post-form select {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+    margin-bottom: 0.5rem;
+  }
+  .new-post-form .submit-btn {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .new-post-form .submit-btn:hover {
+    background-color: #2980b9;
+  }
+  
+  /* VIEW POST PAGE */
+  .post-meta {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  .post-content {
+    margin: 1rem 0;
+    line-height: 1.6;
+  }
+  .back-link {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+  }
+  .back-link:hover {
+    background-color: #2980b9;
+  }
+  

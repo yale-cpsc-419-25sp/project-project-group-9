@@ -1,10 +1,10 @@
 from flask import Flask, session, redirect, url_for
 from flask_cas import CAS
+from community import community_bp  
 
 app = Flask(__name__)
 
-# Flask session secret key (change this in production)
-app.secret_key = "your_secret_key"
+app.secret_key = "your_secret_key"  
 
 # Initialize CAS authentication
 cas = CAS(app, "/cas")
@@ -12,6 +12,10 @@ cas = CAS(app, "/cas")
 # Configure Yale's CAS
 app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
 app.config["CAS_AFTER_LOGIN"] = "home"
+
+# Register the community blueprint with a URL prefix
+
+app.register_blueprint(community_bp, url_prefix="/community")
 
 @app.route("/login")
 def login():

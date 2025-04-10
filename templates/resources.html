@@ -1,66 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>BigSib Resources - Yale Mentorship</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400, 700">
+  <meta charset="UTF-8">
+  <title>BigSib Resources - Yale Mentorship</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather:400,700">
 </head>
 <body>
-    <header>
-        <h1>BigSib Resources</h1>
-        <p>Your Yale Mentorship and Opportunities Hub</p>
-    </header>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('mentors') }}">Find a Mentor</a>
-        <a href="{{ url_for('resources') }}">Resources</a>
-        <a href="#">Community</a> <!-- Add actual route when available -->
-        <a href="{{ url_for('quiz') }}">Take the Quiz</a>
-        <a href="{{ url_for('login') }}">Login</a>
-    </nav>
+  <header>
+    <h1>BigSib Resources</h1>
+    <p>Your Yale Mentorship and Opportunities Hub</p>
+  </header>
+  
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('mentors') }}">Find a Mentor</a>
+    <a href="{{ url_for('resources') }}">Resources</a>
+    <a href="#">Community</a>
+    <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
+    <a href="{{ url_for('login') }}">Login</a>
+  </nav>
 
-    <div class="container">
-        <!--Upcoming Events Section-->
-        <section class="section">
-            <h2>Upcoming Events</h2>
-            <div class="resource-card">
-                <h3>Career Fair 2025</h3>
-                <p><strong>Date: </strong>March 15, 2025</p>
-                <p><strong>Location: </strong>TBD</p>
-                <p>Join us for this campus-wide career fair featuring top employers and alumni networking opportunities.</p>
-                <a href="#">Learn More</a>
-            </div>
-            <div class="resource-card">
-                <h3>Mentorship Workshop</h3>
-                <p><strong>Date:</strong> April 10, 2025</p>
-                <p><strong>Location:</strong> Sterling Memorial Library</p>
-                <p>Engage in interactive sessions with experienced mentors and build your professional network.</p>
-                <a href="#">Learn More</a>
-            </div>
-        </section>
+  <div class="container">
+    <!-- Upcoming Events Section -->
+    <section class="section">
+      <h2>Upcoming Events</h2>
+      <div class="resource-card">
+        <h3>Career Fair 2025</h3>
+        <p><strong>Date: </strong>March 15, 2025</p>
+        <p><strong>Location: </strong>TBD</p>
+        <p>Join us for this campus-wide career fair featuring top employers and alumni networking opportunities.</p>
+        <a href="#">Learn More</a>
+      </div>
+      <div class="resource-card">
+        <h3>Mentorship Workshop</h3>
+        <p><strong>Date:</strong> April 10, 2025</p>
+        <p><strong>Location:</strong> Sterling Memorial Library</p>
+        <p>Engage in interactive sessions with experienced mentors and build your professional network.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </section>
 
-        <!--Career Resources Section-->
-        <section class="section">
-            <h2>Career Resources</h2>
-            <div class="resource-card">
-                <h3>Resume Building</h3>
-                <p>Access resources and templates to help you craft an effective resume tailored to your industry.</p>
-                <a href="#">Explore Now</a>
-            </div>
-            <div class="resource-card">
-                <h3>Interview Preparation</h3>
-                <p>Get tips and strategies to ace your interviews with guidance from experienced mentors.</p>
-                <a href="#">Learn More</a>
-              </div>
-              <div class="resource-card">
-                <h3>Networking Tips</h3>
-                <p>Discover strategies to build and maintain a professional network that supports your career growth.</p>
-                <a href="#">Learn More</a>
-              </div>        
-        </section>
-    </div>
-    <footer>
-        <p>&copy; 2025 BigSib.com. All Rights Reserved.</p>    
-    </footer>
+    <!-- Career Resources Section -->
+    <section class="section">
+      <h2>Career Resources</h2>
+      <div class="resource-card">
+        <h3>Resume Building</h3>
+        <p>Access resources and templates to help you craft an effective resume tailored to your industry.</p>
+        <a href="#">Explore Now</a>
+      </div>
+      <div class="resource-card">
+        <h3>Interview Preparation</h3>
+        <p>Get tips and strategies to ace your interviews with guidance from experienced mentors.</p>
+        <a href="#">Learn More</a>
+      </div>
+      <div class="resource-card">
+        <h3>Networking Tips</h3>
+        <p>Discover strategies to build and maintain a professional network that supports your career growth.</p>
+        <a href="#">Learn More</a>
+      </div>
+    </section>
+  </div>
+  
+  <footer>
+    <p>&copy; 2025 BigSib.com. All Rights Reserved.</p>
+  </footer>
 </body>
+</html>

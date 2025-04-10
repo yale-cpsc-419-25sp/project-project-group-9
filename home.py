@@ -107,7 +107,7 @@ class HomePage(QMainWindow):
 
     def cas_login(self):
         """Redirect user to CAS login."""
-        requests.get("http://localhost:5000/login")  # Calls CAS authentication
+        requests.get("http://localhost:5000/login")  # Calls CAS authentication on your Flask server.
         self.check_login_status()
 
     def check_login_status(self):

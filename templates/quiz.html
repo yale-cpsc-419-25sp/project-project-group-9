@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mentorship Quiz</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='quiz.css') }}">
 </head>
@@ -17,17 +16,24 @@
         <a href="{{ url_for('mentors') }}">Find a Mentor</a>
         <a href="{{ url_for('resources') }}">Resources</a>
         <a href="#">Community</a> <!-- Add actual route when available -->
-        <a href="{{ url_for('quiz') }}">Take the Quiz</a>
+        <!-- IMPORTANT: Use "quiz_form" instead of "quiz" to avoid the BuildError -->
+        <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
         <a href="{{ url_for('login') }}">Login</a>
     </nav>
 
     <div class="container">
         <h1>Mentorship Quiz</h1>
 
+        <!-- 
+          ACTION: "/submit" is correct if your route for handling form submissions is @app.route('/submit', methods=['POST']) in quiz.py 
+          ENCTYPE for file upload
+        -->
         <form action="/submit" method="post" enctype="multipart/form-data">
+
+            <!-- BASIC INFO -->
             <div class="form-section">
                 <label for="name">Name:</label>
-                <input type="text" id="name" name="name" class="input-field">
+                <input type="text" id="name" name="name" class="input-field" required>
                 
                 <label for="pronoun">Pronoun:</label>
                 <select id="pronoun" name="pronoun" class="input-field">
@@ -38,7 +44,7 @@
                     <option value="she/they">she/they</option>
                     <option value="they/she">they/she</option>
                     <option value="he/they">he/they</option>
-                    <option value="ze/zir">zir</option>
+                    <option value="ze/zir">ze/zir</option>
                 </select>
                 
                 <label for="residential_college">Residential College:</label>
@@ -66,180 +72,101 @@
                     <option value="2027">2027</option>
                     <option value="2028">2028</option>
                 </select>                
-
-                <div class="majors-section">
-                    <div class="majors-column">
-                        <input type="checkbox" id="african-american-studies" name="majors[]" value="African American Studies (B.A.)">
-                        <label for="african-american-studies">African American Studies (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="african-studies" name="majors[]" value="African Studies (B.A.)">
-                        <label for="african-studies">African Studies (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="american-studies" name="majors[]" value="American Studies (B.A.)">
-                        <label for="american-studies">American Studies (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="anthropology" name="majors[]" value="Anthropology (B.A.)">
-                        <label for="anthropology">Anthropology (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="applied-mathematics" name="majors[]" value="Applied Mathematics (B.A. or B.S.)">
-                        <label for="applied-mathematics">Applied Mathematics (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="applied-physics" name="majors[]" value="Applied Physics (B.S.)">
-                        <label for="applied-physics">Applied Physics (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="archaeological-studies" name="majors[]" value="Archaeological Studies (B.A.)">
-                        <label for="archaeological-studies">Archaeological Studies (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="architecture" name="majors[]" value="Architecture (B.A.)">
-                        <label for="architecture">Architecture (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="art" name="majors[]" value="Art (B.A.)">
-                        <label for="art">Art (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="astronomy" name="majors[]" value="Astronomy (B.A.)">
-                        <label for="astronomy">Astronomy (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="astrophysics" name="majors[]" value="Astrophysics (B.S.)">
-                        <label for="astrophysics">Astrophysics (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="biomedical-engineering" name="majors[]" value="Biomedical Engineering (B.S.)">
-                        <label for="biomedical-engineering">Biomedical Engineering (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="chemical-engineering" name="majors[]" value="Chemical Engineering (B.S.)">
-                        <label for="chemical-engineering">Chemical Engineering (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="chemistry" name="majors[]" value="Chemistry (B.A. or B.S.)">
-                        <label for="chemistry">Chemistry (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="classical-civilization" name="majors[]" value="Classical Civilization (B.A.)">
-                        <label for="classical-civilization">Classical Civilization (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="classics" name="majors[]" value="Classics (B.A.)">
-                        <label for="classics">Classics (B.A.)</label><br>
-                        <input type="checkbox" id="cognitive-science" name="majors[]" value="Cognitive Science (B.A. or B.S.)">
-                        <label for="cognitive-science">Cognitive Science (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="comparative-literature" name="majors[]" value="Comparative Literature (B.A.)">
-                        <label for="comparative-literature">Comparative Literature (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="computer-science" name="majors[]" value="Computer Science (B.A. or B.S.)">
-                        <label for="computer-science">Computer Science (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="computer-science-economics" name="majors[]" value="Computer Science and Economics (B.S.)">
-                        <label for="computer-science-economics">Computer Science and Economics (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="computer-science-mathematics" name="majors[]" value="Computer Science and Mathematics (B.S.)">
-                        <label for="computer-science-mathematics">Computer Science and Mathematics (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="computer-science-psychology" name="majors[]" value="Computer Science and Psychology (B.A.)">
-                        <label for="computer-science-psychology">Computer Science and Psychology (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="computing-linguistics" name="majors[]" value="Computing and Linguistics (B.A. or B.S.)">
-                        <label for="computing-linguistics">Computing and Linguistics (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="computing-arts" name="majors[]" value="Computing and the Arts (B.A.)">
-                        <label for="computing-arts">Computing and the Arts (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="earth-planetary-sciences" name="majors[]" value="Earth and Planetary Sciences (B.A. or B.S.)">
-                        <label for="earth-planetary-sciences">Earth and Planetary Sciences (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="east-asian-languages-literatures" name="majors[]" value="East Asian Languages and Literatures (B.A.)">
-                        <label for="east-asian-languages-literatures">East Asian Languages and Literatures (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="east-asian-studies" name="majors[]" value="East Asian Studies (B.A.)">
-                        <label for="east-asian-studies">East Asian Studies (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="ecology-evolutionary-biology" name="majors[]" value="Ecology and Evolutionary Biology (B.A. or B.S.)">
-                        <label for="ecology-evolutionary-biology">Ecology and Evolutionary Biology (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="economics" name="majors[]" value="Economics (B.A.)">
-                        <label for="economics">Economics (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="economics-mathematics" name="majors[]" value="Economics and Mathematics (B.A.)">
-                        <label for="economics-mathematics">Economics and Mathematics (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="electrical-engineering" name="majors[]" value="Electrical Engineering (B.S.)">
-                        <label for="electrical-engineering">Electrical Engineering (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="electrical-engineering-cs" name="majors[]" value="Electrical Engineering and Computer Science (B.S.)">
-                        <label for="electrical-engineering-cs">Electrical Engineering and Computer Science (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="engineering-sciences-chemical" name="majors[]" value="Engineering Sciences (Chemical) (B.S.)">
-                        <label for="engineering-sciences-chemical">Engineering Sciences (Chemical) (B.S.)</label><br>
-                    
-                        <input type="checkbox" id="engineering-sciences-electrical" name="majors[]" value="Engineering Sciences (Electrical) (B.A. or B.S.)">
-                        <label for="engineering-sciences-electrical">Engineering Sciences (Electrical) (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="engineering-sciences-environmental" name="majors[]" value="Engineering Sciences (Environmental) (B.A.)">
-                        <label for="engineering-sciences-environmental">Engineering Sciences (Environmental) (B.A.)</label><br>
-                    
-                        <input type="checkbox" id="engineering-sciences-mechanical" name="majors[]" value="Engineering Sciences (Mechanical) (B.A. or B.S.)">
-                        <label for="engineering-sciences-mechanical">Engineering Sciences (Mechanical) (B.A. or B.S.)</label><br>
-                    
-                        <input type="checkbox" id="english" name="majors[]" value="English (B.A.)">
-                        <label for="english">English (B.A.)</label><br>
-                    
-                        <label><input type="checkbox" name="majors[]" value="Environmental Engineering (B.S.)"> Environmental Engineering (B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Environmental Studies (B.A. or B.S.)"> Environmental Studies (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Ethics, Politics, and Economics (B.A.)"> Ethics, Politics, and Economics (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Ethnicity, Race, and Migration (B.A.)"> Ethnicity, Race, and Migration (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Film and Media Studies (B.A.)"> Film and Media Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="French (B.A.)"> French (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="German Studies (B.A.)"> German Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Global Affairs (B.A.)"> Global Affairs (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Greek, Ancient and Modern (B.A.)"> Greek, Ancient and Modern (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="History (B.A.)"> History (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="History of Art (B.A.)"> History of Art (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="History of Science, Medicine, and Public Health (B.A.)"> History of Science, Medicine, and Public Health (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Humanities (B.A.)"> Humanities (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Italian Studies (B.A.)"> Italian Studies (B.A.)</label><br>
-                    </div>
-            
-                    <div class="majors-column">
-                        <label><input type="checkbox" name="majors[]" value="Jewish Studies (B.A.)"> Jewish Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Latin American Studies (B.A.)"> Latin American Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Linguistics (B.A.)"> Linguistics (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Mathematics (B.A. or B.S.)"> Mathematics (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Mathematics and Philosophy (B.A.)"> Mathematics and Philosophy (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Mathematics and Physics (B.S.)"> Mathematics and Physics (B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Mechanical Engineering (B.S.)"> Mechanical Engineering (B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Modern Middle East Studies (B.A.)"> Modern Middle East Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Molecular Biophysics and Biochemistry (B.A. or B.S.)"> Molecular Biophysics and Biochemistry (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Molecular, Cellular, and Developmental Biology (B.A. or B.S.)"> Molecular, Cellular, and Developmental Biology (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Music (B.A.)"> Music (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Near Eastern Languages and Civilizations (B.A.)"> Near Eastern Languages and Civilizations (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Neuroscience (B.A. or B.S.)"> Neuroscience (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Philosophy (B.A.)"> Philosophy (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Physics (B.S.)"> Physics (B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Physics and Geosciences (B.S.)"> Physics and Geosciences (B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Physics and Philosophy (B.A. or B.S.)"> Physics and Philosophy (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Political Science (B.A.)"> Political Science (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Portuguese (B.A.)"> Portuguese (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Psychology (B.A. or B.S.)"> Psychology (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Religious Studies (B.A.)"> Religious Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Russian (B.A.)"> Russian (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Russian, East European, and Eurasian Studies (B.A.)"> Russian, East European, and Eurasian Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Sociology (B.A.)"> Sociology (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="South Asian Studies (second major only)"> South Asian Studies (second major only)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Spanish (B.A.)"> Spanish (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Special Divisional Major (B.A. or B.S.)"> Special Divisional Major (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Statistics and Data Science (B.A. or B.S.)"> Statistics and Data Science (B.A. or B.S.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Theater, Dance, and Performance Studies (B.A.)"> Theater, Dance, and Performance Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Urban Studies (B.A.)"> Urban Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Women’s, Gender, and Sexuality Studies (B.A.)"> Women’s, Gender, and Sexuality Studies (B.A.)</label><br>
-                        <label><input type="checkbox" name="majors[]" value="Undecided"> Undecided</label><br>
-                        
-                    </div>
-                </div>
-
-                <br><br>
-
-            <!-- Image Upload Section -->
-            <div id="image-upload">
-                <label for="headshot">Upload Headshot</label>
-                <input type="file" id="headshot" name="headshot" accept="image/jpeg">
             </div>
 
+            <!-- MAJORS SECTION -->
+            <div class="majors-section">
+                <h3>Select Your Majors</h3>
+                <div class="majors-column">
+                    <input type="checkbox" id="african-american-studies" name="majors[]" value="African American Studies (B.A.)">
+                    <label for="african-american-studies">African American Studies (B.A.)</label><br>
+                
+                    <input type="checkbox" id="african-studies" name="majors[]" value="African Studies (B.A.)">
+                    <label for="african-studies">African Studies (B.A.)</label><br>
+                
+                    <input type="checkbox" id="american-studies" name="majors[]" value="American Studies (B.A.)">
+                    <label for="american-studies">American Studies (B.A.)</label><br>
+                
+                    <input type="checkbox" id="anthropology" name="majors[]" value="Anthropology (B.A.)">
+                    <label for="anthropology">Anthropology (B.A.)</label><br>
+                
+                    <input type="checkbox" id="applied-mathematics" name="majors[]" value="Applied Mathematics (B.A. or B.S.)">
+                    <label for="applied-mathematics">Applied Mathematics (B.A. or B.S.)</label><br>
+                
+                    <input type="checkbox" id="applied-physics" name="majors[]" value="Applied Physics (B.S.)">
+                    <label for="applied-physics">Applied Physics (B.S.)</label><br>
+                
+                    <input type="checkbox" id="archaeological-studies" name="majors[]" value="Archaeological Studies (B.A.)">
+                    <label for="archaeological-studies">Archaeological Studies (B.A.)</label><br>
+                
+                    <input type="checkbox" id="architecture" name="majors[]" value="Architecture (B.A.)">
+                    <label for="architecture">Architecture (B.A.)</label><br>
+                
+                    <input type="checkbox" id="art" name="majors[]" value="Art (B.A.)">
+                    <label for="art">Art (B.A.)</label><br>
+                
+                    <input type="checkbox" id="astronomy" name="majors[]" value="Astronomy (B.A.)">
+                    <label for="astronomy">Astronomy (B.A.)</label><br>
+                
+                    <input type="checkbox" id="astrophysics" name="majors[]" value="Astrophysics (B.S.)">
+                    <label for="astrophysics">Astrophysics (B.S.)</label><br>
+                
+                    <input type="checkbox" id="biomedical-engineering" name="majors[]" value="Biomedical Engineering (B.S.)">
+                    <label for="biomedical-engineering">Biomedical Engineering (B.S.)</label><br>
+                
+                    <input type="checkbox" id="chemical-engineering" name="majors[]" value="Chemical Engineering (B.S.)">
+                    <label for="chemical-engineering">Chemical Engineering (B.S.)</label><br>
+                
+                    <input type="checkbox" id="chemistry" name="majors[]" value="Chemistry (B.A. or B.S.)">
+                    <label for="chemistry">Chemistry (B.A. or B.S.)</label><br>
+                
+                    <input type="checkbox" id="classical-civilization" name="majors[]" value="Classical Civilization (B.A.)">
+                    <label for="classical-civilization">Classical Civilization (B.A.)</label><br>
+                
+                    <input type="checkbox" id="classics" name="majors[]" value="Classics (B.A.)">
+                    <label for="classics">Classics (B.A.)</label><br>
+                    <input type="checkbox" id="cognitive-science" name="majors[]" value="Cognitive Science (B.A. or B.S.)">
+                    <label for="cognitive-science">Cognitive Science (B.A. or B.S.)</label><br>
+                
+                    <input type="checkbox" id="comparative-literature" name="majors[]" value="Comparative Literature (B.A.)">
+                    <label for="comparative-literature">Comparative Literature (B.A.)</label><br>
+                
+                    <input type="checkbox" id="computer-science" name="majors[]" value="Computer Science (B.A. or B.S.)">
+                    <label for="computer-science">Computer Science (B.A. or B.S.)</label><br>
+                
+                    <input type="checkbox" id="computer-science-economics" name="majors[]" value="Computer Science and Economics (B.S.)">
+                    <label for="computer-science-economics">Computer Science and Economics (B.S.)</label><br>
+                
+                    <input type="checkbox" id="computer-science-mathematics" name="majors[]" value="Computer Science and Mathematics (B.S.)">
+                    <label for="computer-science-mathematics">Computer Science and Mathematics (B.S.)</label><br>
+                
+                    <input type="checkbox" id="computer-science-psychology" name="majors[]" value="Computer Science and Psychology (B.A.)">
+                    <label for="computer-science-psychology">Computer Science and Psychology (B.A.)</label><br>
+                
+                    <input type="checkbox" id="computing-linguistics" name="majors[]" value="Computing and Linguistics (B.A. or B.S.)">
+                    <label for="computing-linguistics">Computing and Linguistics (B.A. or B.S.)</label><br>
+                
+                    <input type="checkbox" id="computing-arts" name="majors[]" value="Computing and the Arts (B.A.)">
+                    <label for="computing-arts">Computing and the Arts (B.A.)</label><br>
+                
+                    <input type="checkbox" id="earth-planetary-sciences" name="majors[]" value="Earth and Planetary Sciences (B.A. or B.S.)">
+                    <label for="earth-planetary-sciences">Earth and Planetary Sciences (B.A. or B.S.)</label><br>
+                </div>
+
+                <div class="majors-column">
+                    <!-- Continue listing additional majors here... -->
+                    <label><input type="checkbox" name="majors[]" value="Undecided"> Undecided</label><br>
+                    <!-- etc. (Add or remove as necessary) -->
+                </div>
+            </div>
+
+            <!-- IMAGE UPLOAD -->
+            <div id="image-upload">
+                <label for="headshot">Upload Headshot</label>
+                <input type="file" id="headshot" name="headshot" accept="image/jpeg, image/png, image/gif">
+            </div>
+
+            <!-- AFFINITY GROUPS -->
             <div class="form-section">
                 <p>Select Affinity Groups:</p>
                 <label><input type="checkbox" name="affinity_groups[]" value="International"> International</label>
@@ -250,12 +177,13 @@
                 <label><input type="checkbox" name="affinity_groups[]" value="PWD"> PWD</label>
             </div>
 
+            <!-- EXTRACURRICULARS & INTERESTS -->
             <div class="form-section">
                 <label for="extracurriculars">Extracurriculars:</label>
                 <textarea id="extracurriculars" name="extracurriculars" class="textarea-field"></textarea>
 
-                <label for="interests[]">Interests:</label>
-                <div id="interests[]" class="input-field">
+                <label>Interests:</label>
+                <div id="interests" class="input-field">
                     <input type="checkbox" id="nonprofit-community-organizing" name="interests[]" value="Nonprofit & Community Organizing/Engagement">
                     <label for="nonprofit-community-organizing">Nonprofit & Community Organizing/Engagement</label><br>
                 
@@ -268,8 +196,8 @@
                     <input type="checkbox" id="public-health-healthcare" name="interests[]" value="Public Health & Healthcare">
                     <label for="public-health-healthcare">Public Health & Healthcare</label><br>
                 
-                    <input type="checkbox" id="computer-science" name="interests[]" value="Computer Science">
-                    <label for="computer-science">Computer Science</label><br>
+                    <input type="checkbox" id="computer-science2" name="interests[]" value="Computer Science">
+                    <label for="computer-science2">Computer Science</label><br>
                 
                     <input type="checkbox" id="entrepreneurship" name="interests[]" value="Entrepreneurship">
                     <label for="entrepreneurship">Entrepreneurship</label><br>
@@ -302,25 +230,25 @@
                     <label for="sales-marketing">Sales & Marketing</label>
                 </div>
 
-                <label for="work-exp">Work Experience:</label>
-                <textarea id="work-exp" name="work-exp" class="textarea-field"></textarea>
+                <label for="work_experience">Work Experience:</label>
+                <textarea id="work_exp" name="work_experience" class="textarea-field"></textarea>
 
-                <label for="mentorship_seeking[]">Seeking Mentorship On:</label>
-                <div id="mentorship_seeking[]" class="input-field">
+                <label>Seeking Mentorship On:</label>
+                <div id="mentorship_seeking" class="input-field">
                     <input type="checkbox" id="finding-a-job" name="mentorship_seeking[]" value="Finding a Job">
                     <label for="finding-a-job">Finding a Job</label><br>
                 
                     <input type="checkbox" id="finding-community" name="mentorship_seeking[]" value="Finding Community">
                     <label for="finding-community">Finding Community</label><br>
                 
-                    <input type="checkbox" id="extracurriculars" name="mentorship_seeking[]" value="Extracurriculars">
-                    <label for="extracurriculars">Extracurriculars</label><br>
+                    <input type="checkbox" id="seeking-extracurriculars" name="mentorship_seeking[]" value="Extracurriculars">
+                    <label for="seeking-extracurriculars">Extracurriculars</label><br>
                 
                     <input type="checkbox" id="networking" name="mentorship_seeking[]" value="Networking">
                     <label for="networking">Networking</label><br>
                 
-                    <input type="checkbox" id="research" name="mentorship_seeking[]" value="Research">
-                    <label for="research">Research</label><br>
+                    <input type="checkbox" id="seeking-research" name="mentorship_seeking[]" value="Research">
+                    <label for="seeking-research">Research</label><br>
                 
                     <input type="checkbox" id="graduate-school" name="mentorship_seeking[]" value="Graduate School">
                     <label for="graduate-school">Graduate School</label><br>
@@ -332,8 +260,8 @@
                     <label for="surviving-at-yale">Surviving at Yale</label>
                 </div>
                 
-                <label for="mentorship_offering[]">Open to Offering Mentorship On:</label>
-                <div id="mentorship_offering[]" class="input-field">
+                <label>Open to Offering Mentorship On:</label>
+                <div id="mentorship_offering" class="input-field">
                     <input type="checkbox" id="offering-finding-a-job" name="mentorship_offering[]" value="Finding a Job">
                     <label for="offering-finding-a-job">Finding a Job</label><br>
                 
@@ -358,12 +286,12 @@
                     <input type="checkbox" id="offering-surviving-at-yale" name="mentorship_offering[]" value="Surviving at Yale">
                     <label for="offering-surviving-at-yale">Surviving at Yale</label>
                 </div>
-                
 
                 <label for="bio">2-Sentence Bio:</label>
                 <textarea id="bio" name="bio" class="textarea-field"></textarea>
             </div>
 
+            <!-- ROLES -->
             <div class="roles-section">
                 <p>Roles:</p>
                 <label for="mentor">
