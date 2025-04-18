@@ -1,315 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Mentorship Quiz</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='quiz.css') }}">
+  <meta charset="UTF-8">
+  <title>Mentorship Quiz</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='quiz.css') }}">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <header>
-        <h1>Mentorship Quiz</h1>
-        <p>Find a Mentor/Mentee Today!</p>
-    </header>
-    <nav>
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('mentors') }}">Find a Mentor</a>
-        <a href="{{ url_for('resources') }}">Resources</a>
-        <a href="#">Community</a> <!-- Add actual route when available -->
-        <!-- IMPORTANT: Use "quiz_form" instead of "quiz" to avoid the BuildError -->
-        <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
-        <a href="{{ url_for('login') }}">Login</a>
-    </nav>
+  <header>
+    <h1>Mentorship Quiz</h1>
+    <p>Find a Mentor/Mentee Today!</p>
+  </header>
+  <nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('mentors') }}">Find a Mentor</a>
+    <a href="{{ url_for('resources') }}">Resources</a>
+    <a href="{{ url_for('community_bp.list_communities') }}">Community</a>
+    <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
+    <a href="{{ url_for('login') }}">Login</a>
+  </nav>
 
-    <div class="container">
-        <h1>Mentorship Quiz</h1>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for category, msg in messages %}
+          <li class="flash-{{ category }}">{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 
-        <!-- 
-          ACTION: "/submit" is correct if your route for handling form submissions is @app.route('/submit', methods=['POST']) in quiz.py 
-          ENCTYPE for file upload
-        -->
-        <form action="/submit" method="post" enctype="multipart/form-data">
+  <div class="container">
+    <form action="{{ url_for('submit_quiz') }}" method="post" enctype="multipart/form-data">
+      <!-- BASIC INFO -->
+      <div class="form-section">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" class="input-field" required>
 
-            <!-- BASIC INFO -->
-            <div class="form-section">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" class="input-field" required>
-                
-                <label for="pronoun">Pronoun:</label>
-                <select id="pronoun" name="pronoun" class="input-field">
-                    <option value="" disabled selected>Select your pronoun</option>
-                    <option value="she/her">she/her</option>
-                    <option value="he/him">he/him</option>
-                    <option value="they/them">they/them</option>
-                    <option value="she/they">she/they</option>
-                    <option value="they/she">they/she</option>
-                    <option value="he/they">he/they</option>
-                    <option value="ze/zir">ze/zir</option>
-                </select>
-                
-                <label for="residential_college">Residential College:</label>
-                <select id="residential_college" name="residential_college" class="input-field">
-                    <option value="" disabled selected>Select your Residential College</option>
-                    <option value="Branford College">Branford</option>
-                    <option value="Davenport College">Davenport</option>
-                    <option value="Ezra Stiles College">Ezra Stiles</option>
-                    <option value="Grace Hopper College">Grace Hopper</option>
-                    <option value="Jonathan Edwards College">Jonathan Edwards</option>
-                    <option value="Morse College">Morse</option>
-                    <option value="Pierson College">Pierson</option>
-                    <option value="Silliman College">Silliman</option>
-                    <option value="Timothy Dwight College">Timothy Dwight</option>
-                    <option value="Trumbull College">Trumbull</option>
-                    <option value="Benjamin Franklin College">Benjamin Franklin</option>
-                    <option value="Pauli Murray College">Pauli Murray</option>
-                </select>
-                
-                <label for="college_year">College Year:</label>
-                <select id="college_year" name="college_year" class="input-field">
-                    <option value="" disabled selected>Select your College Year</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                </select>                
-            </div>
+        <label for="pronoun">Pronoun:</label>
+        <select id="pronoun" name="pronoun" class="input-field" required>
+          <option value="" disabled selected>Select your pronoun</option>
+          <option value="she/her">she/her</option>
+          <option value="he/him">he/him</option>
+          <option value="they/them">they/them</option>
+          <option value="she/they">she/they</option>
+          <option value="they/she">they/she</option>
+          <option value="he/they">he/they</option>
+          <option value="ze/zir">ze/zir</option>
+        </select>
 
-            <!-- MAJORS SECTION -->
-            <div class="majors-section">
-                <h3>Select Your Majors</h3>
-                <div class="majors-column">
-                    <input type="checkbox" id="african-american-studies" name="majors[]" value="African American Studies (B.A.)">
-                    <label for="african-american-studies">African American Studies (B.A.)</label><br>
-                
-                    <input type="checkbox" id="african-studies" name="majors[]" value="African Studies (B.A.)">
-                    <label for="african-studies">African Studies (B.A.)</label><br>
-                
-                    <input type="checkbox" id="american-studies" name="majors[]" value="American Studies (B.A.)">
-                    <label for="american-studies">American Studies (B.A.)</label><br>
-                
-                    <input type="checkbox" id="anthropology" name="majors[]" value="Anthropology (B.A.)">
-                    <label for="anthropology">Anthropology (B.A.)</label><br>
-                
-                    <input type="checkbox" id="applied-mathematics" name="majors[]" value="Applied Mathematics (B.A. or B.S.)">
-                    <label for="applied-mathematics">Applied Mathematics (B.A. or B.S.)</label><br>
-                
-                    <input type="checkbox" id="applied-physics" name="majors[]" value="Applied Physics (B.S.)">
-                    <label for="applied-physics">Applied Physics (B.S.)</label><br>
-                
-                    <input type="checkbox" id="archaeological-studies" name="majors[]" value="Archaeological Studies (B.A.)">
-                    <label for="archaeological-studies">Archaeological Studies (B.A.)</label><br>
-                
-                    <input type="checkbox" id="architecture" name="majors[]" value="Architecture (B.A.)">
-                    <label for="architecture">Architecture (B.A.)</label><br>
-                
-                    <input type="checkbox" id="art" name="majors[]" value="Art (B.A.)">
-                    <label for="art">Art (B.A.)</label><br>
-                
-                    <input type="checkbox" id="astronomy" name="majors[]" value="Astronomy (B.A.)">
-                    <label for="astronomy">Astronomy (B.A.)</label><br>
-                
-                    <input type="checkbox" id="astrophysics" name="majors[]" value="Astrophysics (B.S.)">
-                    <label for="astrophysics">Astrophysics (B.S.)</label><br>
-                
-                    <input type="checkbox" id="biomedical-engineering" name="majors[]" value="Biomedical Engineering (B.S.)">
-                    <label for="biomedical-engineering">Biomedical Engineering (B.S.)</label><br>
-                
-                    <input type="checkbox" id="chemical-engineering" name="majors[]" value="Chemical Engineering (B.S.)">
-                    <label for="chemical-engineering">Chemical Engineering (B.S.)</label><br>
-                
-                    <input type="checkbox" id="chemistry" name="majors[]" value="Chemistry (B.A. or B.S.)">
-                    <label for="chemistry">Chemistry (B.A. or B.S.)</label><br>
-                
-                    <input type="checkbox" id="classical-civilization" name="majors[]" value="Classical Civilization (B.A.)">
-                    <label for="classical-civilization">Classical Civilization (B.A.)</label><br>
-                
-                    <input type="checkbox" id="classics" name="majors[]" value="Classics (B.A.)">
-                    <label for="classics">Classics (B.A.)</label><br>
-                    <input type="checkbox" id="cognitive-science" name="majors[]" value="Cognitive Science (B.A. or B.S.)">
-                    <label for="cognitive-science">Cognitive Science (B.A. or B.S.)</label><br>
-                
-                    <input type="checkbox" id="comparative-literature" name="majors[]" value="Comparative Literature (B.A.)">
-                    <label for="comparative-literature">Comparative Literature (B.A.)</label><br>
-                
-                    <input type="checkbox" id="computer-science" name="majors[]" value="Computer Science (B.A. or B.S.)">
-                    <label for="computer-science">Computer Science (B.A. or B.S.)</label><br>
-                
-                    <input type="checkbox" id="computer-science-economics" name="majors[]" value="Computer Science and Economics (B.S.)">
-                    <label for="computer-science-economics">Computer Science and Economics (B.S.)</label><br>
-                
-                    <input type="checkbox" id="computer-science-mathematics" name="majors[]" value="Computer Science and Mathematics (B.S.)">
-                    <label for="computer-science-mathematics">Computer Science and Mathematics (B.S.)</label><br>
-                
-                    <input type="checkbox" id="computer-science-psychology" name="majors[]" value="Computer Science and Psychology (B.A.)">
-                    <label for="computer-science-psychology">Computer Science and Psychology (B.A.)</label><br>
-                
-                    <input type="checkbox" id="computing-linguistics" name="majors[]" value="Computing and Linguistics (B.A. or B.S.)">
-                    <label for="computing-linguistics">Computing and Linguistics (B.A. or B.S.)</label><br>
-                
-                    <input type="checkbox" id="computing-arts" name="majors[]" value="Computing and the Arts (B.A.)">
-                    <label for="computing-arts">Computing and the Arts (B.A.)</label><br>
-                
-                    <input type="checkbox" id="earth-planetary-sciences" name="majors[]" value="Earth and Planetary Sciences (B.A. or B.S.)">
-                    <label for="earth-planetary-sciences">Earth and Planetary Sciences (B.A. or B.S.)</label><br>
-                </div>
+        <label for="residential_college">Residential College:</label>
+        <select id="residential_college" name="residential_college" class="input-field" required>
+          <option value="" disabled selected>Select your Residential College</option>
+          <option value="Benjamin Franklin College">Benjamin Franklin College</option>
+          <option value="Berkeley College">Berkeley College</option>
+          <option value="Branford College">Branford College</option>
+          <option value="Davenport College">Davenport College</option>
+          <option value="Ezra Stiles College">Ezra Stiles College</option>
+          <option value="Grace Hopper College">Grace Hopper College</option>
+          <option value="Jonathan Edwards College">Jonathan Edwards College</option>
+          <option value="Morse College">Morse College</option>
+          <option value="Pauli Murray College">Pauli Murray College</option>
+          <option value="Pierson College">Pierson College</option>
+          <option value="Saybrook College">Saybrook College</option>
+          <option value="Silliman College">Silliman College</option>
+          <option value="Timothy Dwight College">Timothy Dwight College</option>
+          <option value="Trumbull College">Trumbull College</option>
+        </select>
 
-                <div class="majors-column">
-                    <!-- Continue listing additional majors here... -->
-                    <label><input type="checkbox" name="majors[]" value="Undecided"> Undecided</label><br>
-                    <!-- etc. (Add or remove as necessary) -->
-                </div>
-            </div>
+        <label for="college_year">College Year:</label>
+        <select id="college_year" name="college_year" class="input-field" required>
+          <option value="" disabled selected>Select your College Year</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+      </div>
 
-            <!-- IMAGE UPLOAD -->
-            <div id="image-upload">
-                <label for="headshot">Upload Headshot</label>
-                <input type="file" id="headshot" name="headshot" accept="image/jpeg, image/png, image/gif">
-            </div>
+      <!-- MAJORS -->
+      <div class="majors-section">
+        <h3>Select Your Majors</h3>
+        <div class="majors-list">
+          {% for major in majors_list %}
+            <label>
+              <input type="checkbox" name="majors[]" value="{{ major }}">
+              {{ major }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
 
-            <!-- AFFINITY GROUPS -->
-            <div class="form-section">
-                <p>Select Affinity Groups:</p>
-                <label><input type="checkbox" name="affinity_groups[]" value="International"> International</label>
-                <label><input type="checkbox" name="affinity_groups[]" value="FGLI"> FGLI</label>
-                <label><input type="checkbox" name="affinity_groups[]" value="BIPOC"> BIPOC</label>
-                <label><input type="checkbox" name="affinity_groups[]" value="LGBTQ+"> LGBTQ+</label>
-                <label><input type="checkbox" name="affinity_groups[]" value="WGI in STEM"> WGI in STEM</label>
-                <label><input type="checkbox" name="affinity_groups[]" value="PWD"> PWD</label>
-            </div>
+      <!-- IMAGE UPLOAD -->
+      <div id="image-upload">
+        <label for="headshot">Upload Headshot</label>
+        <input type="file" id="headshot" name="headshot" accept="image/png, image/jpeg, image/gif">
+      </div>
 
-            <!-- EXTRACURRICULARS & INTERESTS -->
-            <div class="form-section">
-                <label for="extracurriculars">Extracurriculars:</label>
-                <textarea id="extracurriculars" name="extracurriculars" class="textarea-field"></textarea>
+      <!-- AFFINITY GROUPS -->
+      <div class="affinity-section">
+        <h3>Select Affinity Groups</h3>
+        <div class="affinity-list">
+          {% for group in affinity_groups_list %}
+            <label>
+              <input type="checkbox" name="affinity_groups[]" value="{{ group }}">
+              {{ group }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
 
-                <label>Interests:</label>
-                <div id="interests" class="input-field">
-                    <input type="checkbox" id="nonprofit-community-organizing" name="interests[]" value="Nonprofit & Community Organizing/Engagement">
-                    <label for="nonprofit-community-organizing">Nonprofit & Community Organizing/Engagement</label><br>
-                
-                    <input type="checkbox" id="finance" name="interests[]" value="Finance">
-                    <label for="finance">Finance</label><br>
-                
-                    <input type="checkbox" id="consulting" name="interests[]" value="Consulting">
-                    <label for="consulting">Consulting</label><br>
-                
-                    <input type="checkbox" id="public-health-healthcare" name="interests[]" value="Public Health & Healthcare">
-                    <label for="public-health-healthcare">Public Health & Healthcare</label><br>
-                
-                    <input type="checkbox" id="computer-science2" name="interests[]" value="Computer Science">
-                    <label for="computer-science2">Computer Science</label><br>
-                
-                    <input type="checkbox" id="entrepreneurship" name="interests[]" value="Entrepreneurship">
-                    <label for="entrepreneurship">Entrepreneurship</label><br>
-                
-                    <input type="checkbox" id="education-academic" name="interests[]" value="Education & Academic">
-                    <label for="education-academic">Education & Academic</label><br>
-                
-                    <input type="checkbox" id="law-public-policy" name="interests[]" value="Law & Public Policy">
-                    <label for="law-public-policy">Law & Public Policy</label><br>
-                
-                    <input type="checkbox" id="creative-arts-design" name="interests[]" value="Creative Arts & Design">
-                    <label for="creative-arts-design">Creative Arts & Design</label><br>
-                
-                    <input type="checkbox" id="entertainment" name="interests[]" value="Entertainment">
-                    <label for="entertainment">Entertainment</label><br>
-                
-                    <input type="checkbox" id="media-communications" name="interests[]" value="Media & Communications">
-                    <label for="media-communications">Media & Communications</label><br>
-                
-                    <input type="checkbox" id="sports" name="interests[]" value="Sports">
-                    <label for="sports">Sports</label><br>
-                
-                    <input type="checkbox" id="journalism" name="interests[]" value="Journalism">
-                    <label for="journalism">Journalism</label><br>
-                
-                    <input type="checkbox" id="research" name="interests[]" value="Research">
-                    <label for="research">Research</label><br>
-                
-                    <input type="checkbox" id="sales-marketing" name="interests[]" value="Sales & Marketing">
-                    <label for="sales-marketing">Sales & Marketing</label>
-                </div>
+      <!-- INTERESTS -->
+      <div class="interests-section">
+        <h3>Select Interests</h3>
+        <div class="interests-list">
+          {% for intr in interests_list %}
+            <label>
+              <input type="checkbox" name="interests[]" value="{{ intr }}">
+              {{ intr }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
 
-                <label for="work_experience">Work Experience:</label>
-                <textarea id="work_exp" name="work_experience" class="textarea-field"></textarea>
+      <!-- SEEKING MENTORSHIP -->
+      <div class="topics-section">
+        <h3>Seeking Mentorship On</h3>
+        <div class="topics-list">
+          {% for t in seeking_list %}
+            <label>
+              <input type="checkbox" name="mentorship_seeking[]" value="{{ t }}">
+              {{ t }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
 
-                <label>Seeking Mentorship On:</label>
-                <div id="mentorship_seeking" class="input-field">
-                    <input type="checkbox" id="finding-a-job" name="mentorship_seeking[]" value="Finding a Job">
-                    <label for="finding-a-job">Finding a Job</label><br>
-                
-                    <input type="checkbox" id="finding-community" name="mentorship_seeking[]" value="Finding Community">
-                    <label for="finding-community">Finding Community</label><br>
-                
-                    <input type="checkbox" id="seeking-extracurriculars" name="mentorship_seeking[]" value="Extracurriculars">
-                    <label for="seeking-extracurriculars">Extracurriculars</label><br>
-                
-                    <input type="checkbox" id="networking" name="mentorship_seeking[]" value="Networking">
-                    <label for="networking">Networking</label><br>
-                
-                    <input type="checkbox" id="seeking-research" name="mentorship_seeking[]" value="Research">
-                    <label for="seeking-research">Research</label><br>
-                
-                    <input type="checkbox" id="graduate-school" name="mentorship_seeking[]" value="Graduate School">
-                    <label for="graduate-school">Graduate School</label><br>
-                
-                    <input type="checkbox" id="coursework" name="mentorship_seeking[]" value="Coursework">
-                    <label for="coursework">Coursework</label><br>
-                
-                    <input type="checkbox" id="surviving-at-yale" name="mentorship_seeking[]" value="Surviving at Yale">
-                    <label for="surviving-at-yale">Surviving at Yale</label>
-                </div>
-                
-                <label>Open to Offering Mentorship On:</label>
-                <div id="mentorship_offering" class="input-field">
-                    <input type="checkbox" id="offering-finding-a-job" name="mentorship_offering[]" value="Finding a Job">
-                    <label for="offering-finding-a-job">Finding a Job</label><br>
-                
-                    <input type="checkbox" id="offering-finding-community" name="mentorship_offering[]" value="Finding Community">
-                    <label for="offering-finding-community">Finding Community</label><br>
-                
-                    <input type="checkbox" id="offering-extracurriculars" name="mentorship_offering[]" value="Extracurriculars">
-                    <label for="offering-extracurriculars">Extracurriculars</label><br>
-                
-                    <input type="checkbox" id="offering-networking" name="mentorship_offering[]" value="Networking">
-                    <label for="offering-networking">Networking</label><br>
-                
-                    <input type="checkbox" id="offering-research" name="mentorship_offering[]" value="Research">
-                    <label for="offering-research">Research</label><br>
-                
-                    <input type="checkbox" id="offering-graduate-school" name="mentorship_offering[]" value="Graduate School">
-                    <label for="offering-graduate-school">Graduate School</label><br>
-                
-                    <input type="checkbox" id="offering-coursework" name="mentorship_offering[]" value="Coursework">
-                    <label for="offering-coursework">Coursework</label><br>
-                
-                    <input type="checkbox" id="offering-surviving-at-yale" name="mentorship_offering[]" value="Surviving at Yale">
-                    <label for="offering-surviving-at-yale">Surviving at Yale</label>
-                </div>
+      <!-- OFFERING MENTORSHIP -->
+      <div class="topics-section">
+        <h3>Open to Offering Mentorship On</h3>
+        <div class="topics-list">
+          {% for t in offering_list %}
+            <label>
+              <input type="checkbox" name="mentorship_offering[]" value="{{ t }}">
+              {{ t }}
+            </label>
+          {% endfor %}
+        </div>
+      </div>
 
-                <label for="bio">2-Sentence Bio:</label>
-                <textarea id="bio" name="bio" class="textarea-field"></textarea>
-            </div>
+      <!-- BIO -->
+      <div class="form-section">
+        <label for="bio">2‑Sentence Bio:</label>
+        <textarea id="bio" name="bio" class="textarea-field" required></textarea>
+      </div>
 
-            <!-- ROLES -->
-            <div class="roles-section">
-                <p>Roles:</p>
-                <label for="mentor">
-                    <input type="checkbox" id="mentor" name="roles[]" value="Mentor"> Mentor
-                </label>
-                <label for="mentee">
-                    <input type="checkbox" id="mentee" name="roles[]" value="Mentee"> Mentee
-                </label>
-                <label for="public">
-                    <input type="checkbox" id="public" name="roles[]" value="Public"> Public
-                </label>
-                <label for="private">
-                    <input type="checkbox" id="private" name="roles[]" value="Private"> Private
-                </label>
-            </div>
+      <!-- USER ROLE -->
+      <div class="roles-section">
+        <h3>User Role</h3>
+        <div class="roles-list">
+          <label>
+            <input type="checkbox" name="roles[]" value="Mentor">
+            Mentor
+          </label>
+          <label>
+            <input type="checkbox" name="roles[]" value="Mentee">
+            Mentee
+          </label>
+        </div>
+      </div>
 
-            <button type="submit" class="submit-btn">Submit</button>
-        </form>
-    </div>
+      <!-- VISIBILITY -->
+      <div class="visibility-section">
+        <h3>Profile Visibility</h3>
+        <div class="visibility-list">
+          <label>
+            <input type="radio" name="visibility" value="Public" required>
+            Public
+          </label>
+          <label>
+            <input type="radio" name="visibility" value="Private">
+            Private
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+  </div>
 </body>
 </html>
