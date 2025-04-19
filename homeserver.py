@@ -1,75 +1,97 @@
 import os
-import sys
-import argparse
-from flask import Flask, render_template, session, redirect, url_for
-from quiz import quiz_form, submit_quiz, profile as profile_route
-from community import community_bp
+import sqlite3
+from functools import wraps
+
+from flask import Flask, render_template, session, redirect, url_for, request
 from flask_cas import CAS
 
-# Create the Flask app
+from quiz import quiz_form, submit_quiz
+from user_profile import profile as profile_route
+from community import community_bp
+
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 
-# Register routes from quiz.py
-app.add_url_rule('/quiz', view_func=quiz_form)
-app.add_url_rule('/submit', view_func=submit_quiz, methods=['POST'])
-app.add_url_rule('/profile/<int:user_id>', view_func=profile_route)
+# ---- CAS CONFIGURATION ----
+app.config['CAS_SERVER']         = 'https://secure.its.yale.edu'
+app.config['CAS_LOGIN_ROUTE']    = '/cas/login'
+app.config['CAS_VALIDATE_ROUTE'] = '/cas/serviceValidate'
+app.config['CAS_LOGOUT_ROUTE']   = '/cas/logout'
+app.config['CAS_VERSION']        = '2'
+# ← You **must** tell Flask‑CAS where to go after login & after logout:
+app.config['CAS_AFTER_LOGIN']    = 'home'
+app.config['CAS_AFTER_LOGOUT']   = 'home'
 
-# Set the secret key
-app.secret_key = "your_secret_key"
+cas = CAS(app, '/cas')
 
-# Configure CAS for authentication
-cas = CAS(app, "/cas")
-app.config["CAS_SERVER"] = "https://secure.its.yale.edu/cas"
-app.config["CAS_AFTER_LOGIN"] = "home"
 
-# Register the community blueprint with a URL prefix 
-app.register_blueprint(community_bp, url_prefix="/community")
+# ---- a decorator to protect pages ----
+def login_required(f):
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        if 'CAS_USERNAME' not in session:
+            return redirect(url_for('cas.login', next=request.path))
+        return f(*args, **kwargs)
+    return wrapped
 
-# Define routes for additional pages
+
+# ---- register blueprints & routes ----
+app.register_blueprint(community_bp, url_prefix='/community')
+
+
+@app.route('/login')
+def login():
+    return redirect(url_for('cas.login'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('cas.logout'))
+
+
 @app.route('/')
+@login_required
 def home():
     return render_template('home.html')
 
 @app.route('/resources')
+@login_required
 def resources():
     return render_template('resources.html')
 
+@app.route('/quiz')
+@login_required
+def quiz_page():
+    return quiz_form()
+
+@app.route('/submit', methods=['POST'])
+@login_required
+def submit_quiz_route():
+    return submit_quiz()
+
 @app.route('/mentors')
+@login_required
 def mentors():
-    return render_template('mentors.html')
+    conn = sqlite3.connect('lux.sqlite')
+    conn.row_factory = sqlite3.Row
+    cur = conn.cursor()
+    cur.execute("SELECT user_id, name FROM Users")
+    rows = cur.fetchall()
+    conn.close()
+    mentors = [{
+        'user_id': r['user_id'],
+        'name': r['name'],
+        'score': 1.0,
+        'shared_attributes': []
+    } for r in rows]
+    return render_template('mentors.html', mentors=mentors)
 
-@app.route("/login")
-def login():
-    
-    session['CAS_USERNAME'] = 'testuser'
-    return redirect(url_for('home'))
+@app.route('/profile/<int:user_id>')
+@login_required
+def profile_view(user_id):
+    return profile_route(user_id)
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for('home'))
-
-@app.route("/user")
-def user():
-    if "CAS_USERNAME" in session:
-        return f"Logged in as {session['CAS_USERNAME']}"
-    return "Not logged in"
-
-def check_database_exists(db_path='lux.sqlite'):
-    """Check if the database file exists."""
-    if not os.path.exists(db_path):
-        print(f"Error: The database file '{db_path}' does not exist.", file=sys.stderr)
-        sys.exit(1)
-
-def main():
-    parser = argparse.ArgumentParser(description="Mentorship Quiz Application")
-    parser.add_argument('port', type=int, help='The port at which the server should listen')
-    args = parser.parse_args()
-    if args.port < 1 or args.port > 65535:
-        print("Error: The port must be between 1 and 65535.", file=sys.stderr)
-        sys.exit(1)
-    check_database_exists()
-    app.run(host='0.0.0.0', port=args.port, debug=True)
 
 if __name__ == '__main__':
-    main()
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host='0.0.0.0', port=port, debug=True)
