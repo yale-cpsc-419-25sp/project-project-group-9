@@ -15,8 +15,8 @@
     <a href="{{ url_for('home') }}">Home</a>
     <a href="{{ url_for('mentors') }}">Find a Mentor</a>
     <a href="{{ url_for('resources') }}">Resources</a>
-    <a href="#">Community</a>
-    <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
+    <a href="{{ url_for('community_bp.list_communities') }}">Community</a>
+    <a href="{{ url_for('quiz_page') }}">Take the Quiz</a>
     <a href="{{ url_for('login') }}">Login</a>
   </nav>
 
@@ -24,15 +24,17 @@
     <section class="section">
       <h2>Top Mentor Matches for You</h2>
       {% for mentor in mentors %}
-      <div class="mentor-card">
-        <h3>{{ mentor.name }}</h3>
-        <p><strong>Match Score:</strong> {{ mentor.score * 100 }}%</p>
-        <p><strong>Shared Interests:</strong> {{ mentor.shared_attributes | join(', ') }}</p>
-        <a href="{{ url_for('profile', user_id=mentor.user_id) }}">View Profile</a>
-      </div>
+        <div class="mentor-card">
+          <h3>{{ mentor.name }}</h3>
+          <p><strong>Match Score:</strong> {{ (mentor.score * 100)|round(1) }}%</p>
+          {% if mentor.shared_attributes %}
+            <p><strong>Shared Interests:</strong> {{ mentor.shared_attributes|join(', ') }}</p>
+          {% endif %}
+          <a href="{{ url_for('profile_view', user_id=mentor.user_id) }}">View Profile</a>
+        </div>
       {% endfor %}
       {% if mentors|length == 0 %}
-      <p>No mentor matches found at this time.</p>
+        <p>No mentor matches found at this time.</p>
       {% endif %}
     </section>
   </div>
