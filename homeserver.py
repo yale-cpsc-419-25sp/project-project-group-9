@@ -18,6 +18,7 @@ app.config['CAS_LOGIN_ROUTE']    = '/cas/login'
 app.config['CAS_VALIDATE_ROUTE'] = '/cas/serviceValidate'
 app.config['CAS_LOGOUT_ROUTE']   = '/cas/logout'
 app.config['CAS_VERSION']        = '2'
+# ← You **must** tell Flask‑CAS where to go after login & after logout:
 app.config['CAS_AFTER_LOGIN']    = 'home'
 app.config['CAS_AFTER_LOGOUT']   = 'home'
 

@@ -1,3 +1,4 @@
+#home.py
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel,
     QStackedWidget, QHBoxLayout, QFrame

@@ -2,35 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BigSib - Home</title>
+  <title>Welcome to BigSib</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-  <header>
+  <header class="site-header">
     <h1>Welcome to BigSib</h1>
     <p>Your Personalized Yale Mentorship Network</p>
   </header>
-  
-  <nav>
+
+  <nav class="site-nav">
     <a href="{{ url_for('home') }}">Home</a>
     <a href="{{ url_for('mentors') }}">Find a Mentor</a>
     <a href="{{ url_for('resources') }}">Resources</a>
     <a href="{{ url_for('community_bp.list_communities') }}">Community</a>
-    <a href="{{ url_for('quiz_form') }}">Take the Quiz</a>
-    <a href="{{ url_for('login') }}">Login</a>
+    <a href="{{ url_for('quiz_page') }}">Take the Quiz</a>
+    <!-- only show logout, never login -->
+    <a href="{{ url_for('logout') }}">Logout</a>
   </nav>
 
-  <div class="container">
+  <main class="container">
     <section class="section">
       <h2>Find Your Mentor at Yale</h2>
-      <p>BigSib helps you connect with mentors who share your interests, background, and career aspirations.
-         Get started by taking the quiz and building your mentorship network.</p>
-      <a href="{{ url_for('quiz_form') }}" class="btn">Take the Quiz</a>
+      <p>
+        BigSib helps you connect with mentors who share your interests,
+        background, and career aspirations. Get started by taking the quiz
+        and building your mentorship network.
+      </p>
+      <a href="{{ url_for('quiz_page') }}" class="btn">Take the Quiz</a>
     </section>
-  </div>
+  </main>
 
-  <footer>
-    <p>&copy; 2025 BigSib.com. All Rights Reserved.</p>
+  <footer class="site-footer">
+    <p>© 2025 BigSib.com. All Rights Reserved.</p>
   </footer>
 </body>
 </html>
