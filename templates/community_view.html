@@ -17,13 +17,8 @@
         {% if session.get('user_id') %}
           <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
           
-          <div class="dropdown">
-            <span class="dropdown-toggle">Profiles</span>
-            <div class="dropdown-content">
-              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
-              <a href="{{ url_for('logout') }}">Logout</a>
-            </div>
-          </div>
+          <a href="{{ url_for('logout') }}">Logout</a>
+
         {% else %}
           <a href="{{ url_for('login') }}">Login</a>
         {% endif %}
