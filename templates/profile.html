@@ -25,7 +25,13 @@
   </style>
 </head>
 <body>
-  <header><h1>Your Profile</h1></header>
+    <header>
+    {% if profile.is_own_profile %}
+      <h1>Your Profile</h1>
+    {% else %}
+      <h1>{{ profile.name }}'s Profile</h1>
+    {% endif %}
+  </header>
   <nav>
     <a href="{{ url_for('mentors') }}">Find a Mentor</a>
     <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
