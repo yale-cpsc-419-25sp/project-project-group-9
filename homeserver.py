@@ -145,17 +145,12 @@ def select_profile(user_id):
 def mentors():
     user_id = session['user_id']
 
-    # 1) open connection
     conn = sqlite3.connect('lux.sqlite')
-    # (no need for row_factory here, your matcher only uses .cursor())
 
-    # 2) run the real matching logic
     raw_scores = calculate_match_scores(conn, user_id)
 
-    # 3) close connection now that we're done
     conn.close()
 
-    # 4) build a new list with integer % scores
     mentors = []
     for m in raw_scores:
         score = m.get('score', 0) or 0     # guard against None/nan
@@ -169,8 +164,9 @@ def mentors():
             'score':            pct,           # now an int 0–100
             'shared_attributes': m.get('shared_attributes', [])
         })
+        
+    mentors = sorted(mentors, key=lambda m: m['score'], reverse=True)[:3]
 
-    # 5) hand off to your template
     return render_template('mentors.html', mentors=mentors, user_id=user_id)
 
 
