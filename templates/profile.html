@@ -1,47 +1,48 @@
-<!--templates/profile.html-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>{{ profile.name }}'s Profile</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+  <style>
+    .profile-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .edit-profile-btn {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 16px;
+      background-color: #0073b1;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1em;
+    }
+    .edit-profile-btn:hover {
+      background-color: #005f9e;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Your Profile</h1>
-  </header>
-
-  <nav class="navbar">
-    <div class="navbar-container">
-      
-      <div class="navbar-links">
-        <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
-        <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
-        {% if session.get('user_id') %}
-          <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
-          
-          <div class="dropdown">
-            <span class="dropdown-toggle">Profiles</span>
-            <div class="dropdown-content">
-              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
-              <a href="{{ url_for('logout') }}">Logout</a>
-            </div>
-          </div>
-        {% else %}
-          <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
-      </div>
-    </div>
+  <header><h1>Your Profile</h1></header>
+  <nav>
+    <a href="{{ url_for('mentors') }}">Find a Mentor</a>
+    <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
+    <a href="{{ url_for('profile_view', user_id=profile.user_id) }}">Profile</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
   </nav>
-
   <div class="profile-container">
     <div class="profile-header">
-      <h1 class="profile-name">{{ profile.name }}</h1>
-      <div class="profile-top">
-        <img src="{{ url_for('static', filename=profile.headshot) }}" alt="Headshot" class="profile-pic">
-      </div>
+      <h2 class="profile-name">{{ profile.name }}</h2>
+      <img src="{{ url_for('static', filename=profile.headshot) }}"
+           alt="Headshot"
+           class="profile-pic">
+      {% if session.get('user_id') == profile.user_id %}
+        <a href="{{ url_for('profile_edit', user_id=profile.user_id) }}"
+           class="edit-profile-btn">Edit Profile</a>
+      {% endif %}
     </div>
-
     <div class="profile-details">
       <h2>About</h2>
       <p><strong>User ID:</strong> {{ profile.user_id }}</p>
@@ -49,25 +50,18 @@
       <p><strong>Residential College:</strong> {{ profile.res_college }}</p>
       <p><strong>College Year:</strong> {{ profile.college_year }}</p>
       <p><strong>Majors:</strong> {{ majors | join(', ') }}</p>
-
       <h2>Affinity Groups</h2>
       <p>{{ affinity_groups | join(', ') }}</p>
-
       <h2>Extracurriculars</h2>
       <p>{{ profile.extracurriculars }}</p>
-
       <h2>Interests</h2>
       <p>{{ interests | join(', ') }}</p>
-
       <h2>Work Experience</h2>
       <p>{{ profile.work_exp }}</p>
-
       <h2>Seeking Mentorship On</h2>
       <p>{{ seeking | join(', ') }}</p>
-
       <h2>Open to Offering Mentorship On</h2>
       <p>{{ offering | join(', ') }}</p>
-
       <h2>Roles</h2>
       <p>{{ roles | join(', ') }}</p>
     </div>

@@ -1,10 +1,13 @@
-# homeserver.py
 import os
 import sqlite3
 from functools import wraps
 
-from flask import Flask, flash, render_template, session, redirect, url_for, request
-from quiz import quiz_form, submit_quiz
+from flask import (
+    Flask, flash, render_template,
+    session, redirect, url_for,
+    request, abort
+)
+from quiz import quiz_form, submit_quiz, update_quiz
 from match import calculate_match_scores
 from user_profile import profile as profile_route
 from community import community_bp
@@ -12,7 +15,6 @@ import bcrypt
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
-
 app.register_blueprint(community_bp, url_prefix='/community')
 
 @app.context_processor
@@ -46,103 +48,75 @@ def quiz_page():
 
 @app.route('/new_profile')
 def new_profile():
-    # Allow users to create a new profile even if already logged in
     return quiz_form()
 
 @app.route('/submit', methods=['POST'])
 def submit_quiz_route():
-    user_id = submit_quiz()
-    # Set the session to this newly created profile
-    session['user_id'] = user_id
-    return redirect(url_for('profile_view', user_id=user_id))
+    uid = submit_quiz()
+    session['user_id'] = uid
+    return redirect(url_for('profile_view', user_id=uid))
 
-@app.route('/loginsignup', methods=['GET', 'POST'])
+@app.route('/profile/<int:user_id>/edit', methods=['GET','POST'])
+@login_required
+def profile_edit(user_id):
+    if session['user_id'] != user_id:
+        abort(403)
+    if request.method == 'POST':
+        return update_quiz(user_id)
+    return quiz_form(user_id)
+
+@app.route('/loginsignup', methods=['GET','POST'])
 def loginsignup():
     if request.method == 'POST':
         profile_id = request.form['profile_id']
-        password = request.form['password']
-
-        conn = sqlite3.connect('lux.sqlite')
-        conn.row_factory = sqlite3.Row
+        password   = request.form['password']
+        conn = sqlite3.connect('lux.sqlite'); conn.row_factory = sqlite3.Row
         cur = conn.cursor()
-
-        # Convert profile_id to integer if it's an integer string
         try:
-            user_id = int(profile_id)
-            cur.execute("SELECT user_id, hashed_password FROM Users WHERE user_id = ?", (user_id,))
+            pid = int(profile_id)
+            cur.execute("SELECT user_id, hashed_password FROM Users WHERE user_id=?", (pid,))
         except ValueError:
-            # If it's not an integer, search by the string ID
-            cur.execute("SELECT user_id, hashed_password FROM Users WHERE user_id = ?", (profile_id,))
-            
-        row = cur.fetchone()
-        conn.close()
-
-        if row and row['hashed_password']:
-            if bcrypt.checkpw(password.encode('utf-8'), row['hashed_password']):
-                session['user_id'] = row['user_id']
-                # Also store cas_username if we know it
-                conn = sqlite3.connect('lux.sqlite')
-                cur = conn.cursor()
-                cur.execute("SELECT cas_username FROM Users WHERE user_id = ?", (row['user_id'],))
-                cas_row = cur.fetchone()
-                if cas_row and cas_row[0]:
-                    session['cas_username'] = cas_row[0]
-                conn.close()
-                
-                return redirect(url_for('profile_view', user_id=row['user_id']))
-
-        return render_template('loginsignup.html', error="Invalid User ID or Password. Please try again.")
-
+            cur.execute("SELECT user_id, hashed_password FROM Users WHERE user_id=?", (profile_id,))
+        row = cur.fetchone(); conn.close()
+        if row and bcrypt.checkpw(password.encode('utf-8'), row['hashed_password']):
+            session['user_id'] = row['user_id']
+            return redirect(url_for('profile_view', user_id=row['user_id']))
+        return render_template('loginsignup.html', error="Invalid User ID or Password.")
     return render_template('loginsignup.html')
 
 @app.route('/switch_profile')
 @login_required
 def switch_profile():
-    # Get current CAS username if available
     cas_username = session.get('cas_username')
-    
     if not cas_username:
         return redirect(url_for('home'))
-    
-    # Fetch all profiles for this CAS username
-    conn = sqlite3.connect('lux.sqlite')
-    conn.row_factory = sqlite3.Row
+    conn = sqlite3.connect('lux.sqlite'); conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    
-    cur.execute("""
-        SELECT user_id, name 
-        FROM Users 
-        WHERE cas_username = ?
-    """, (cas_username,))
-    
-    profiles = cur.fetchall()
-    conn.close()
-    
+    cur.execute("SELECT user_id,name FROM Users WHERE cas_username=?", (cas_username,))
+    profiles = cur.fetchall(); conn.close()
     return render_template('switch_profile.html', profiles=profiles)
 
 @app.route('/select_profile/<int:user_id>')
 def select_profile(user_id):
-    # Switch to the selected profile
-    conn = sqlite3.connect('lux.sqlite')
-    conn.row_factory = sqlite3.Row
+    conn = sqlite3.connect('lux.sqlite'); conn.row_factory = sqlite3.Row
     cur = conn.cursor()
-    
-    cur.execute("SELECT user_id, cas_username FROM Users WHERE user_id = ?", (user_id,))
-    user = cur.fetchone()
-    
+    cur.execute("SELECT user_id,cas_username FROM Users WHERE user_id=?", (user_id,))
+    user = cur.fetchone(); conn.close()
     if user:
         session['user_id'] = user['user_id']
         if user['cas_username']:
             session['cas_username'] = user['cas_username']
-        
         return redirect(url_for('profile_view', user_id=user_id))
-    
-    flash("Profile not found", "danger")
+    flash("Profile not found","danger")
     return redirect(url_for('home'))
 
 @app.route('/mentors')
 @login_required
 def mentors():
+    uid = session['user_id']
+    conn = sqlite3.connect('lux.sqlite')
+    raw = calculate_match_scores(conn, uid)
+    conn.close()
     user_id = session['user_id']
 
     conn = sqlite3.connect('lux.sqlite')
@@ -152,18 +126,15 @@ def mentors():
     conn.close()
 
     mentors = []
-    for m in raw_scores:
-        score = m.get('score', 0) or 0     # guard against None/nan
-        try:
-            pct = round(score * 100)
-        except Exception:
-            pct = 0
+    for m in raw:
+        pct = round((m.get('score') or 0) * 100)
         mentors.append({
-            'user_id':          m['user_id'],
-            'name':             m['name'],
-            'score':            pct,           # now an int 0–100
+            'user_id': m['user_id'],
+            'name': m['name'],
+            'score': pct,
             'shared_attributes': m.get('shared_attributes', [])
         })
+    return render_template('mentors.html', mentors=mentors, user_id=uid)
         
     mentors = sorted(mentors, key=lambda m: m['score'], reverse=True)[:3]
 
