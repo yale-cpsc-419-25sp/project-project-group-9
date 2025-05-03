@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - BigSib</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Login to BigSib</h1>
+  </header>
+  <main class="container">
+    <section class="section">
+      <form method="POST" action="/loginsignup" class="login-form">
+        <p>Enter your User ID:</p>
+        <input type="text" id="profile_id" name="profile_id" required>
+        
+        <p>Enter your Password:</p>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit" class="btn">Log In!</button>
+      </form>
+      <div class="signup-container">
+        <p>Don't have a profile or forgot your log in info?</p>
+        <a href="{{ url_for('quiz_page') }}" class="signup-btn">Take the Quiz!</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Error Popup -->
+  {% if error %}
+  <div class="error-popup" style="display: block;">
+    <div class="error-popup-content">
+      <p>{{ error }}</p>
+      <button onclick="closeErrorPopup()">Close</button>
+    </div>
+  </div>
+  {% endif %}
+
+  <script>
+    function closeErrorPopup() {
+      document.querySelector('.error-popup').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

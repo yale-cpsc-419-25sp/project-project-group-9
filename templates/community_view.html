@@ -1,0 +1,105 @@
+<!-- templates/community_view.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ community.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='community_view.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-container">
+      
+      <div class="navbar-links">
+        <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
+        <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
+        <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
+          
+          <div class="dropdown">
+            <span class="dropdown-toggle">Profiles</span>
+            <div class="dropdown-content">
+              <a href="{{ url_for('switch_profile') }}">Switch Profile</a>
+              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="community-container">
+    <div class="community-header">
+      <h1>{{ community.name }}</h1>
+      <p class="community-description">{{ community.description }}</p>
+    </div>
+
+    <form class="filter-form" method="GET">
+      <label>Filter:</label>
+      <select name="post_type" onchange="this.form.submit()">
+        <option value=""      {% if not selected_post_type %}selected{% endif %}>All</option>
+        <option value="motivational"   {% if selected_post_type=='motivational'   %}selected{% endif %}>Motivational</option>
+        <option value="job posting"    {% if selected_post_type=='job posting'    %}selected{% endif %}>Job Posting</option>
+        <option value="resource"       {% if selected_post_type=='resource'       %}selected{% endif %}>Resource</option>
+        <option value="event"          {% if selected_post_type=='event'          %}selected{% endif %}>Event</option>
+        <option value="interpersonal"  {% if selected_post_type=='interpersonal'  %}selected{% endif %}>Interpersonal</option>
+      </select>
+
+      <label>Sort:</label>
+      <select name="sort" onchange="this.form.submit()">
+        <option value="recent"     {% if selected_sort=='recent'     %}selected{% endif %}>Most Recent</option>
+        <option value="most_liked" {% if selected_sort=='most_liked' %}selected{% endif %}>Most Liked</option>
+        <option value="author"     {% if selected_sort=='author'     %}selected{% endif %}>Author</option>
+      </select>
+    </form>
+
+    <p>
+      <a class="create-post-btn"
+         href="{{ url_for('community_bp.new_post', community_id=community.community_id) }}">
+        Create New Post
+      </a>
+    </p>
+
+    {% if posts %}
+      <ul class="post-list">
+        {% for p in posts %}
+          <li>
+            <strong>
+              <a href="{{ url_for('community_bp.view_post',
+                                   community_id=community.community_id,
+                                   post_id=p.post_id) }}">{{ p.title }}</a>
+            </strong>
+            <br>
+            <em>by {{ p.author_name }} | {{ p.post_type }} | {{ p.created_at.strftime("%Y-%m-%d %H:%M") }}</em>
+            <div class="post-actions">
+              <form action="{{ url_for('community_bp.like_post',
+                                       community_id=community.community_id,
+                                       post_id=p.post_id) }}"
+                    method="POST" style="display:inline">
+                <button type="submit">👍 {{ p.like_count }}</button>
+              </form>
+              <form action="{{ url_for('community_bp.dislike_post',
+                                       community_id=community.community_id,
+                                       post_id=p.post_id) }}"
+                    method="POST" style="display:inline">
+                <button type="submit">👎 {{ p.dislike_count }}</button>
+              </form>
+              <a class="comments-link"
+                 href="{{ url_for('community_bp.view_post',
+                                  community_id=community.community_id,
+                                  post_id=p.post_id) }}">Comments</a>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No posts yet. Be the first to <a href="{{ url_for('community_bp.new_post',
+                                                          community_id=community.community_id) }}">create one</a>!</p>
+    {% endif %}
+  </div>
+</body>
+</html>

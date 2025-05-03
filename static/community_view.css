@@ -1,0 +1,199 @@
+/* Community View / Posts Listing */
+
+.community-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+  
+  .community-header h1 {
+    font-size: 2rem;
+    color: #0F4D92;
+    margin-bottom: 0.5rem;
+  }
+  
+  .community-header p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-form {
+    display: inline-block;
+    margin-right: 2rem;
+  }
+  
+  .filter-form label {
+    font-weight: bold;
+  }
+  
+  .filter-form select {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .create-post-btn {
+    display: inline-block;
+    background-color: #0F4D92;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .create-post-btn:hover {
+    background-color: #0b3a6c;
+  }
+  
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .post-list li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .post-list li:hover {
+    background-color: #f1f5fb;
+  }
+  
+  .post-list li strong a {
+    color: #5A2D82;
+    font-size: 1.3rem;
+    text-decoration: none;
+  }
+  
+  .post-list li strong a:hover {
+    text-decoration: underline;
+  }
+  
+  .post-list li em {
+    display: block;
+    color: #777;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+  }
+  
+  .post-list li .btn {
+    margin-top: 1rem;
+  }
+  
+
+
+  /* community_view.css */
+
+/* 1. Center everything like the homepage */
+main {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  font-family: Georgia, serif;
+  background: #f9f8f6;
+}
+
+/* 2. Post header */
+.post-header h1 {
+  font-size: 2.2rem;
+  color: #0F4D92;
+  margin-bottom: 0.5rem;
+}
+.post-meta {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* 3. Post content card */
+.post-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* 4. Comments section */
+.comments-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.comments-list .comment {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.comment-meta {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+/* 5. Comment form */
+.comment-form textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+.comment-form button {
+  background-color: #0F4D92;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.comment-form button:hover {
+  background-color: #0b3a6c;
+}
+
+/* 6. Back link */
+.back-link {
+  display: inline-block;
+  color: #5A2D82;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 2rem;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* 7. Navbar (if you’re not already pulling in your global styles) */
+/* Navigation */
+nav {
+  background-color: #0F4D92;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 1.1em;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #FFCC00;
+}
+
+

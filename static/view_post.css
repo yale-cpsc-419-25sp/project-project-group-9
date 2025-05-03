@@ -1,0 +1,113 @@
+/* community_view.css */
+
+/* 0. Define Yale Blue as a CSS variable */
+:root {
+  --yale-blue: #0F4D92;
+  --yale-blue-dark: #0b3a6c;
+  --link-purple: #5A2D82;
+}
+
+/* 1. Center everything like the homepage */
+main {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+  font-family: Georgia, serif;
+  background: #f9f8f6;
+}
+
+/* 2. Post header */
+.post-header h1 {
+  font-size: 2.2rem;
+  color: var(--yale-blue);
+  margin-bottom: 0.5rem;
+}
+.post-meta {
+  color: #555;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+/* 3. Post content card */
+.post-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* 4. Comments section */
+.comments-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.comments-list .comment {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.comment-meta {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+
+/* 5. Comment form */
+.comment-form textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+.comment-form button {
+  background-color: var(--yale-blue);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.comment-form button:hover {
+  background-color: var(--yale-blue-dark);
+}
+
+/* 6. Back link */
+.back-link {
+  display: inline-block;
+  color: var(--link-purple);
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 2rem;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* 7. Navigation bar */
+nav {
+  border-bottom: 8px solid var(--yale-blue);
+  background: var(--yale-blue);
+  text-align: center;
+  padding: 1rem 0;
+}
+nav a {
+  color: white;
+  font-size: 1.4rem;
+  margin: 0 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+nav a:hover {
+  color: var(--link-purple);
+}

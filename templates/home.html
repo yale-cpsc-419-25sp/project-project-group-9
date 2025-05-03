@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to BigSib</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <h1>Welcome to BigSib</h1>
+    <p>Your Personalized Yale Mentorship Network</p>
+  </header>
+  <main class="container">
+    <section class="section">
+      <h2>Find Your Mentor at Yale</h2>
+      <p>
+        BigSib helps you connect with mentors who share your interests,
+        background, and career aspirations. Get started by taking the quiz
+        and building your mentorship network.
+      </p>
+      <a href="{{ url_for('loginsignup') }}" class="btn">Log In or Take the Quiz!</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2025 BigSib.com. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

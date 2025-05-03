@@ -1,0 +1,78 @@
+<!--templates/profile.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ profile.name }}'s Profile</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Your Profile</h1>
+  </header>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      
+      <div class="navbar-links">
+        <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
+        <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
+        <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
+          
+          <div class="dropdown">
+            <span class="dropdown-toggle">Profiles</span>
+            <div class="dropdown-content">
+              <a href="{{ url_for('switch_profile') }}">Switch Profile</a>
+              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-container">
+    <div class="profile-header">
+      <h1 class="profile-name">{{ profile.name }}</h1>
+      <div class="profile-top">
+        <img src="{{ url_for('static', filename=profile.headshot) }}" alt="Headshot" class="profile-pic">
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <h2>About</h2>
+      <p><strong>User ID:</strong> {{ profile.user_id }}</p>
+      <p><strong>Pronouns:</strong> {{ profile.pronoun }}</p>
+      <p><strong>Residential College:</strong> {{ profile.res_college }}</p>
+      <p><strong>College Year:</strong> {{ profile.college_year }}</p>
+      <p><strong>Majors:</strong> {{ majors | join(', ') }}</p>
+
+      <h2>Affinity Groups</h2>
+      <p>{{ affinity_groups | join(', ') }}</p>
+
+      <h2>Extracurriculars</h2>
+      <p>{{ profile.extracurriculars }}</p>
+
+      <h2>Interests</h2>
+      <p>{{ interests | join(', ') }}</p>
+
+      <h2>Work Experience</h2>
+      <p>{{ profile.work_exp }}</p>
+
+      <h2>Seeking Mentorship On</h2>
+      <p>{{ seeking | join(', ') }}</p>
+
+      <h2>Open to Offering Mentorship On</h2>
+      <p>{{ offering | join(', ') }}</p>
+
+      <h2>Roles</h2>
+      <p>{{ roles | join(', ') }}</p>
+    </div>
+  </div>
+</body>
+</html>

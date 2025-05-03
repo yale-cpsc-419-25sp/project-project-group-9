@@ -1,0 +1,63 @@
+<!--templates/mentors.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find a Mentor - BigSib</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Find Your Mentor</h1>
+    <p>Browse available mentors and connect with someone who shares your interests.</p>
+  </header>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      
+      <div class="navbar-links">
+        <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
+        <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
+        <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
+          
+          <div class="dropdown">
+            <span class="dropdown-toggle">Profiles</span>
+            <div class="dropdown-content">
+              <a href="{{ url_for('switch_profile') }}">Switch Profile</a>
+              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section class="section">
+      <h2>Top Mentor Matches for You</h2>
+      {% for mentor in mentors %}
+        <div class="mentor-card">
+          <h3>{{ mentor.name }}</h3>
+          <p><strong>Match Score:</strong> {{ (mentor.score * 100)|round(1) }}%</p>
+          {% if mentor.shared_attributes %}
+            <p><strong>Shared Interests:</strong> {{ mentor.shared_attributes|join(', ') }}</p>
+          {% endif %}
+          <a href="{{ url_for('profile_view', user_id=mentor.user_id) }}">View Profile</a>
+        </div>
+      {% endfor %}
+      {% if mentors|length == 0 %}
+        <p>No mentor matches found at this time.</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 BigSib.com. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>

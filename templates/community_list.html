@@ -1,0 +1,70 @@
+<!-- templates/community_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Communities</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="community_view">
+  <nav class="navbar">
+    <div class="navbar-container">
+      
+      <div class="navbar-links">
+        <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
+        <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
+        <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('profile_view', user_id=session.get('user_id')) }}" {% if request.path.startswith('/profile') %}class="active"{% endif %}>My Profile</a>
+          
+          <div class="dropdown">
+            <span class="dropdown-toggle">Profiles</span>
+            <div class="dropdown-content">
+              <a href="{{ url_for('switch_profile') }}">Switch Profile</a>
+              <a href="{{ url_for('new_profile') }}">Create New Profile</a>
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+          </div>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {% if selected_ids is defined %}
+      <h1>Your Selected Communities</h1>
+      <ul>
+        {% for c in communities %}
+          <li>
+            <h2>{{ c.name }}</h2>
+            <p>{{ c.description }}</p>
+            <a class="btn" href="{{ url_for('community_bp.view_community', community_id=c.community_id) }}">
+              View Posts
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+      <a class="btn" href="{{ url_for('community_bp.list_communities') }}">← Back to Selection</a>
+    {% else %}
+      <h1>Select Communities to Explore</h1>
+      <form method="post">
+        {% for c in communities %}
+          <div>
+            <label>
+              <input type="checkbox" name="community_ids" value="{{ c.community_id }}">
+              {{ c.name }}
+            </label>
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn">Show My Communities</button>
+      </form>
+    {% endif %}
+  </main>
+
+  <footer>
+    © {{ now.year if now is defined else '2025' }} BigSib.com. All Rights Reserved.
+  </footer>
+</body>
+</html>
