@@ -5,7 +5,7 @@ from functools import wraps
 from flask import (
     Flask, flash, render_template,
     session, redirect, url_for,
-    request, abort
+    request, abort, Response
 )
 from quiz import quiz_form, submit_quiz, update_quiz
 from match import calculate_match_scores
@@ -44,7 +44,8 @@ def home():
 
 @app.route('/quiz')
 def quiz_page():
-    return quiz_form()
+    errors = session.pop('form_errors', [])
+    return render_template('quiz.html', errors=errors)
 
 @app.route('/new_profile')
 def new_profile():
@@ -52,9 +53,15 @@ def new_profile():
 
 @app.route('/submit', methods=['POST'])
 def submit_quiz_route():
-    uid = submit_quiz()
-    session['user_id'] = uid
-    return redirect(url_for('profile_view', user_id=uid))
+    result = submit_quiz()
+
+    # If result is a Response (like redirect due to form errors), just return it
+    if isinstance(result, Response):
+        return result
+
+    # Otherwise, it should be a user_id (int)
+    session['user_id'] = result
+    return redirect(url_for('profile_view', user_id=result))
 
 @app.route('/profile/<int:user_id>/edit', methods=['GET','POST'])
 @login_required
