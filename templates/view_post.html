@@ -15,6 +15,10 @@
       {{ post.post_type }} |
       {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}
     </p>
+    
+    <div class="mt-3">
+      <p>{{ post.content }}</p>
+    </div>    
 
     <!-- COMMENTS SECTION ONLY -->
     <div id="comments" class="mb-4">
