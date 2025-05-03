@@ -158,80 +158,155 @@ body {
     left: 0;
   }
   
-  /* Dropdown styles */
-  .dropdown {
-    position: relative;
-    display: inline-block;
+  /* 7. Navbar (if you’re not already pulling in your global styles) */
+/* Navigation */
+nav {
+  background-color: #0F4D92;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 1.1em;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #FFCC00;
+}
+
+.navbar {
+  background-color: #1e4785;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-brand {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  margin-right: auto; /* Pushes everything else to the right */
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 30px; /* Increased spacing between menu items */
+}
+
+.navbar-links a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.2s;
+  padding: 5px 0;
+  position: relative;
+}
+
+.navbar-links a:hover {
+  color: white;
+}
+
+.navbar-links .active {
+  color: white;
+}
+
+/* Underline effect for active links */
+.navbar-links .active::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: white;
+  bottom: -2px;
+  left: 0;
+}
+
+.navbar-links a:hover::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  bottom: -2px;
+  left: 0;
+}
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-toggle {
+  background-color: #1e4785;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 160px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 10px 14px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #1e4785;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-wrap: wrap;
   }
   
-  .dropdown-toggle {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: all 0.2s;
-  }
-  
-  .dropdown-toggle:hover {
-    color: white;
-  }
-  
-  .dropdown-toggle::after {
-    content: "▼";
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 10px;
-    transition: transform 0.2s;
-  }
-  
-  .dropdown:hover .dropdown-toggle::after {
-    transform: rotate(180deg);
+  .navbar-links {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: space-between;
   }
   
   .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 180px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
-    z-index: 1;
-    top: 100%;
-    right: 0;
-    margin-top: 10px;
-    overflow: hidden; /* Makes the rounded corners work with hover effect */
+    right: auto;
   }
-  
-  .dropdown-content a {
-    color: #1e4785;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
-    transition: background-color 0.2s;
-    border-bottom: 1px solid #f1f5fa;
-  }
-  
-  .dropdown-content a:last-child {
-    border-bottom: none;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #f1f5fa;
-    color: #1e4785;
-  }
-  
-  .dropdown-content a:hover::after {
-    display: none; /* Remove underline effect for dropdown items */
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-    animation: fadeIn 0.2s;
-  }
+}
+
   
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
