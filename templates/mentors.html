@@ -16,7 +16,6 @@
     <div class="navbar-container">
       
       <div class="navbar-links">
-        <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
         <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
         <a href="{{ url_for('community_bp.list_communities') }}">Community Pages</a>
         {% if session.get('user_id') %}
@@ -25,7 +24,6 @@
           <div class="dropdown">
             <span class="dropdown-toggle">Profiles</span>
             <div class="dropdown-content">
-              <a href="{{ url_for('switch_profile') }}">Switch Profile</a>
               <a href="{{ url_for('new_profile') }}">Create New Profile</a>
               <a href="{{ url_for('logout') }}">Logout</a>
             </div>
