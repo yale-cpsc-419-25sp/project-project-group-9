@@ -39,6 +39,7 @@
            alt="Headshot"
            class="profile-pic">
       {% if session.get('user_id') == profile.user_id %}
+        <p></p>
         <a href="{{ url_for('profile_edit', user_id=profile.user_id) }}"
            class="edit-profile-btn">Edit Profile</a>
       {% endif %}
