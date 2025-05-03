@@ -101,7 +101,6 @@ def switch_profile():
     cas_username = session.get('cas_username')
     
     if not cas_username:
-        flash("Unable to find associated profiles", "warning")
         return redirect(url_for('home'))
     
     # Fetch all profiles for this CAS username
