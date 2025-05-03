@@ -40,16 +40,11 @@
   <div class="container">
     <section class="section">
       <h2>Top Mentor Matches for You</h2>
-      {% for mentor in mentors %}
-        <div class="mentor-card">
-          <h3>{{ mentor.name }}</h3>
-          <p><strong>Match Score:</strong> {{ (mentor.score * 100)|round(1) }}%</p>
-          {% if mentor.shared_attributes %}
-            <p><strong>Shared Interests:</strong> {{ mentor.shared_attributes|join(', ') }}</p>
-          {% endif %}
-          <a href="{{ url_for('profile_view', user_id=mentor.user_id) }}">View Profile</a>
-        </div>
-      {% endfor %}
+        {% for mentor in mentors %}
+        <h3>{{ mentor.name }}</h3>
+        <p>Match Score: {{ mentor.score }}%</p>
+        <a href="{{ url_for('profile_view', user_id=mentor.user_id) }}">View Profile</a>
+        {% endfor %}
       {% if mentors|length == 0 %}
         <p>No mentor matches found at this time.</p>
       {% endif %}

@@ -5,6 +5,7 @@ from functools import wraps
 
 from flask import Flask, flash, render_template, session, redirect, url_for, request
 from quiz import quiz_form, submit_quiz
+from match import calculate_match_scores
 from user_profile import profile as profile_route
 from community import community_bp
 import bcrypt
@@ -143,22 +144,36 @@ def select_profile(user_id):
 @app.route('/mentors')
 @login_required
 def mentors():
-    user_id = session.get('user_id')
+    user_id = session['user_id']
 
+    # 1) open connection
     conn = sqlite3.connect('lux.sqlite')
-    conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
-    cur.execute("SELECT user_id, name FROM Users")
-    rows = cur.fetchall()
+    # (no need for row_factory here, your matcher only uses .cursor())
+
+    # 2) run the real matching logic
+    raw_scores = calculate_match_scores(conn, user_id)
+
+    # 3) close connection now that we're done
     conn.close()
 
-    mentors = [{
-        'user_id': r['user_id'],
-        'name': r['name'],
-        'score': 1.0,
-        'shared_attributes': []
-    } for r in rows]
+    # 4) build a new list with integer % scores
+    mentors = []
+    for m in raw_scores:
+        score = m.get('score', 0) or 0     # guard against None/nan
+        try:
+            pct = round(score * 100)
+        except Exception:
+            pct = 0
+        mentors.append({
+            'user_id':          m['user_id'],
+            'name':             m['name'],
+            'score':            pct,           # now an int 0–100
+            'shared_attributes': m.get('shared_attributes', [])
+        })
+
+    # 5) hand off to your template
     return render_template('mentors.html', mentors=mentors, user_id=user_id)
+
 
 @app.route('/profile/<int:user_id>')
 @login_required
