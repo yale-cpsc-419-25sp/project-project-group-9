@@ -113,12 +113,10 @@ def select_profile(user_id):
 @app.route('/mentors')
 @login_required
 def mentors():
-<<<<<<< HEAD
     uid = session['user_id']
     conn = sqlite3.connect('lux.sqlite')
     raw = calculate_match_scores(conn, uid)
     conn.close()
-=======
     user_id = session['user_id']
 
     conn = sqlite3.connect('lux.sqlite')
@@ -127,7 +125,6 @@ def mentors():
 
     conn.close()
 
->>>>>>> ca75d9b4ab27741718a2f3c636e86ca2d0f55489
     mentors = []
     for m in raw:
         pct = round((m.get('score') or 0) * 100)
@@ -137,15 +134,12 @@ def mentors():
             'score': pct,
             'shared_attributes': m.get('shared_attributes', [])
         })
-<<<<<<< HEAD
     return render_template('mentors.html', mentors=mentors, user_id=uid)
-=======
         
     mentors = sorted(mentors, key=lambda m: m['score'], reverse=True)[:3]
 
     return render_template('mentors.html', mentors=mentors, user_id=user_id)
 
->>>>>>> ca75d9b4ab27741718a2f3c636e86ca2d0f55489
 
 @app.route('/profile/<int:user_id>')
 @login_required
