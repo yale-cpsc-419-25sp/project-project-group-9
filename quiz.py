@@ -185,7 +185,7 @@ def submit_quiz():
     if not offering: errors.append("Select something you’re offering.")
     if not roles:    errors.append("Select at least one role.")
     if errors:
-        for e in errors: flash(e, "warning")
+        session['form_errors'] = errors
         return redirect(url_for('quiz_page'))
 
     hashed_pw = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
