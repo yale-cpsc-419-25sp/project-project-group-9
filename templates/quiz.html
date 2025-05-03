@@ -12,15 +12,15 @@
     <h1>{% if edit_mode %}Edit Your Profile{% else %}Mentorship Quiz{% endif %}</h1>
     {% if not edit_mode %}<p>Find a Mentor/Mentee Today!</p>{% endif %}
   </header>
-  {% with msgs = get_flashed_messages(with_categories=true) %}
-    {% if msgs %}
-      <ul class="flashes">
-        {% for cat, m in msgs %}
-          <li class="flash-{{ cat }}">{{ m }}</li>
+  {% if errors %}
+    <script>
+      window.onload = function() {
+        {% for error in errors %}
+          alert("{{ error | safe }}");
         {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+      };
+    </script>
+  {% endif %}
   <div class="container">
     <form action="{% if edit_mode %}{{ url_for('profile_edit', user_id=user_id) }}{% else %}{{ url_for('submit_quiz_route') }}{% endif %}"
           method="post" enctype="multipart/form-data">
