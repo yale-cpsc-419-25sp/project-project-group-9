@@ -155,9 +155,7 @@
   </header>
 
   <nav class="navbar">
-    <div class="navbar-container">
-      <a href="{{ url_for('home') }}" class="navbar-brand">BigSib</a>
-      
+    <div class="navbar-container">      
       <div class="navbar-links">
         <a href="{{ url_for('home') }}" {% if request.path == url_for('home') %}class="active"{% endif %}>Home</a>
         <a href="{{ url_for('mentors') }}" {% if request.path == url_for('mentors') %}class="active"{% endif %}>Find Mentors</a>
