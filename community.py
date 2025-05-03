@@ -18,22 +18,10 @@ def get_db_connection():
     return conn
 
 
-def get_user_id_by_cas_username(cas_username):
-    if not cas_username:
-        return None
-    with closing(get_db_connection()) as conn:
-        cur = conn.cursor()
-        cur.execute(
-            "SELECT user_id FROM Users WHERE cas_username = ?",
-            (cas_username,)
-        )
-        row = cur.fetchone()
-        return row["user_id"] if row else None
-
 
 @community_bp.route("/communities", methods=["GET", "POST"])
 def list_communities():
-    profile_id = get_user_id_by_cas_username(session.get("CAS_USERNAME"))
+    profile_id = session.get("user_id")
     now = datetime.now()
 
     # always load all for checkbox form
@@ -100,7 +88,7 @@ def view_community(community_id):
             SELECT p.post_id, p.title, p.content, p.post_type,
                    p.created_at, p.deleted_at,
                    u.name AS author_name,
-                   u.cas_username AS author_netid,
+                   u.user_id AS author_netid,
                    (SELECT COUNT(*) FROM Community_Post_Likes    WHERE post_id=p.post_id)    AS like_count,
                    (SELECT COUNT(*) FROM Community_Post_Dislikes WHERE post_id=p.post_id) AS dislike_count
               FROM Community_Posts p
@@ -147,21 +135,8 @@ def view_community(community_id):
 
 @community_bp.route("/communities/<int:community_id>/newpost", methods=["GET", "POST"])
 def new_post(community_id):
-    if "CAS_USERNAME" not in session:
-        return redirect(url_for("cas.login"))
-    casid = session["CAS_USERNAME"]
-    # look up or create user
-    with closing(get_db_connection()) as conn:
-        cur = conn.cursor()
-        cur.execute(
-            "SELECT user_id FROM Users WHERE cas_username = ?",
-            (casid,)
-        )
-        row = cur.fetchone()
-        if not row:
-            flash("Your CAS username isn’t linked.", "danger")
-            return redirect(url_for("community_bp.list_communities"))
-        uid = row["user_id"]
+
+    uid = session.get("user_id")
 
     with closing(get_db_connection()) as conn:
         cur = conn.cursor()
@@ -227,7 +202,7 @@ def view_post(community_id, post_id):
             SELECT p.post_id, p.title, p.content, p.post_type,
                    p.created_at, p.deleted_at,
                    u.name AS author_name,
-                   u.cas_username AS author_netid,
+                   u.user_id AS author_netid,
                    (SELECT COUNT(*) FROM Community_Post_Likes    WHERE post_id=p.post_id)    AS like_count,
                    (SELECT COUNT(*) FROM Community_Post_Dislikes WHERE post_id=p.post_id) AS dislike_count
               FROM Community_Posts p
@@ -282,14 +257,12 @@ def view_post(community_id, post_id):
     methods=["POST"]
 )
 def like_post(community_id, post_id):
-    if "CAS_USERNAME" not in session:
-        return redirect(url_for("cas.login"))
-    casid = session["CAS_USERNAME"]
+    user_id = session["user_id"]
     with closing(get_db_connection()) as conn:
         cur = conn.cursor()
         cur.execute(
-            "SELECT user_id FROM Users WHERE cas_username = ?",
-            (casid,)
+            "SELECT * FROM Users WHERE user_id = ?",
+            (user_id,)
         )
         row = cur.fetchone()
         if not row:
@@ -327,14 +300,12 @@ def like_post(community_id, post_id):
     methods=["POST"]
 )
 def dislike_post(community_id, post_id):
-    if "CAS_USERNAME" not in session:
-        return redirect(url_for("cas.login"))
-    casid = session["CAS_USERNAME"]
+    user_id = session["user_id"]
     with closing(get_db_connection()) as conn:
         cur = conn.cursor()
         cur.execute(
-            "SELECT user_id FROM Users WHERE cas_username = ?",
-            (casid,)
+            "SELECT * FROM Users WHERE user_id = ?",
+            (user_id,)
         )
         row = cur.fetchone()
         if not row:
@@ -372,8 +343,6 @@ def dislike_post(community_id, post_id):
     methods=["POST"]
 )
 def comment_post(community_id, post_id):
-    if "CAS_USERNAME" not in session:
-        return redirect(url_for("cas.login"))
     content = request.form.get("comment","").strip()
     if not content:
         flash("Comment cannot be empty.", "warning")
@@ -382,12 +351,12 @@ def comment_post(community_id, post_id):
                     community_id=community_id,
                     post_id=post_id)
         )
-    casid = session["CAS_USERNAME"]
+    user_id = session["user_id"]
     with closing(get_db_connection()) as conn:
         cur = conn.cursor()
         cur.execute(
-            "SELECT user_id FROM Users WHERE cas_username = ?",
-            (casid,)
+            "SELECT * FROM Users WHERE user_id = ?",
+            (user_id,)
         )
         row = cur.fetchone()
         if not row:
@@ -413,8 +382,6 @@ def comment_post(community_id, post_id):
     methods=["POST"]
 )
 def delete_post(community_id, post_id):
-    if "CAS_USERNAME" not in session:
-        return redirect(url_for("cas.login"))
     with closing(get_db_connection()) as conn:
         cur = conn.cursor()
         # verify ownership
@@ -423,7 +390,7 @@ def delete_post(community_id, post_id):
             (post_id,)
         )
         row = cur.fetchone()
-        if not row or session["CAS_USERNAME"] is None:
+        if not row or session["user_id"] is None:
             flash("Unauthorized.", "danger")
             return redirect(
                 url_for("community_bp.view_community",
