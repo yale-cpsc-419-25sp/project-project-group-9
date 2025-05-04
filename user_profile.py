@@ -29,6 +29,7 @@ def profile(user_id):
     data = {
         "user_id": user["user_id"],
         "name": user["name"],
+        "email": user["email"],
         "pronoun": user["pronoun"],
         "res_college": user["residential_college"],
         "college_year": user["college_year"],
