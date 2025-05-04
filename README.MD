@@ -23,6 +23,7 @@ Key Features
 - Users may post opportunities, events, and questions.
 - Posts can be filtered by user, type, and tags.
 
+NOTE: Our proposal never included a chat feature. Mentors and mentees can connect through the emails included in the profiles
 
 How to Run BigSib
 
