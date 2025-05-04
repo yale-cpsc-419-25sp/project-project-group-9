@@ -2,6 +2,7 @@
 -- USERS TABLE
 CREATE TABLE Users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
     hashed_password TEXT NOT NULL,
     name TEXT NOT NULL,
     pronoun TEXT,
