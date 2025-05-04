@@ -95,7 +95,7 @@ def quiz_form(user_id=None):
     roles_list = ["Mentor","Mentee"]
 
     # defaults
-    name = pronoun = res_college = college_year = ""
+    name = email = pronoun = res_college = college_year = ""
     headshot = None
     extracurriculars = work_experience = bio = ""
     sel_maj = sel_aff = sel_int = sel_seek = sel_off = sel_roles = set()
@@ -107,6 +107,7 @@ def quiz_form(user_id=None):
         u = cur.fetchone(); conn.close()
         if u:
             name            = u["name"]
+            email           = u["email"] 
             pronoun         = u["pronoun"]
             res_college     = u["residential_college"]
             college_year    = u["college_year"]
@@ -146,6 +147,7 @@ def quiz_form(user_id=None):
       offering_list=offering_list,
       roles_list=roles_list,
       name=name,
+      email=email,
       pronoun=pronoun,
       res_college=res_college,
       college_year=college_year,
@@ -163,6 +165,7 @@ def quiz_form(user_id=None):
 
 def submit_quiz():
     name                = request.form["name"]
+    email                = request.form["email"]     
     pronoun             = request.form["pronoun"]
     res_college         = request.form["residential_college"]
     college_year        = request.form["college_year"]
@@ -200,11 +203,11 @@ def submit_quiz():
     cur = conn.cursor()
     cur.execute("""
       INSERT INTO Users
-        (name, pronoun, residential_college, college_year,
+        (name, email, pronoun, residential_college, college_year,
          headshot_path, extracurriculars, work_experience, bio, hashed_password)
-      VALUES (?,?,?,?,?,?,?,?,?)
+      VALUES (?, ?,?,?,?,?,?,?,?,?)
     """, (
-      name, pronoun, res_college, college_year,
+      name, email, pronoun, res_college, college_year,
       headshot_path, extracurriculars, work_experience, bio, hashed_pw
     ))
     uid = cur.lastrowid
@@ -234,6 +237,7 @@ def submit_quiz():
 
 def update_quiz(user_id):
     name                = request.form["name"]
+    email                = request.form["email"]   
     pronoun             = request.form["pronoun"]
     res_college         = request.form["residential_college"]
     college_year        = request.form["college_year"]
@@ -270,21 +274,21 @@ def update_quiz(user_id):
     if headshot_path:
         cur.execute("""
           UPDATE Users SET
-            name=?, pronoun=?, residential_college=?, college_year=?,
+            name=?, email =?, pronoun=?, residential_college=?, college_year=?,
             headshot_path=?, extracurriculars=?, work_experience=?, bio=?
           WHERE user_id=?
         """, (
-          name, pronoun, res_college, college_year,
+          name, email, pronoun, res_college, college_year,
           headshot_path, extracurriculars, work_experience, bio, user_id
         ))
     else:
         cur.execute("""
           UPDATE Users SET
-            name=?, pronoun=?, residential_college=?, college_year=?,
+            name=?, email=?, pronoun=?, residential_college=?, college_year=?,
             extracurriculars=?, work_experience=?, bio=?
           WHERE user_id=?
         """, (
-          name, pronoun, res_college, college_year,
+          name, email, pronoun, res_college, college_year,
           extracurriculars, work_experience, bio, user_id
         ))
     for tbl in [
