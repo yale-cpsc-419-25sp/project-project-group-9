@@ -64,7 +64,7 @@
       <h2>About</h2>
       <p><strong>User ID:</strong> {{ profile.user_id }}</p>
       <p><strong>Email:</strong> {{ profile.email }}</p>
-      <p><strong>Pronouns:</strong> {{ profile.pronoun }}</p>
+      <p><strong>Email:</strong> <a href="mailto:{{ profile.email }}?subject=Let's%20connect!">{{ profile.email }}</a></p>
       <p><strong>Residential College:</strong> {{ profile.res_college }}</p>
       <p><strong>College Year:</strong> {{ profile.college_year }}</p>
       <p><strong>Majors:</strong> {{ majors | join(', ') }}</p>
