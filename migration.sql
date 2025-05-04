@@ -9,6 +9,7 @@ CREATE TABLE Users_backup (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     cas_username TEXT,      -- This is the key field for supporting multiple profiles
     hashed_password TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     pronoun TEXT,
     residential_college TEXT,
@@ -22,7 +23,7 @@ CREATE TABLE Users_backup (
 );
 
 -- Copy data from existing Users table
-INSERT INTO Users_backup(user_id, hashed_password, name, pronoun, residential_college, college_year,
+INSERT INTO Users_backup(user_id, hashed_password, email, name, pronoun, residential_college, college_year,
                         headshot_path, extracurriculars, work_experience, bio, created_at, updated_at)
 SELECT user_id, hashed_password, name, pronoun, residential_college, college_year,
        headshot_path, extracurriculars, work_experience, bio, created_at, updated_at
