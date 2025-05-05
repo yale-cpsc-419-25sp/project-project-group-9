@@ -1,4 +1,3 @@
-/* static/profile.css */
 body {
     font-family: 'Merriweather', Georgia, serif;
     background-color: #f3f2ef;
@@ -158,8 +157,6 @@ body {
     left: 0;
   }
   
-  /* 7. Navbar (if you’re not already pulling in your global styles) */
-/* Navigation */
 nav {
   background-color: #0F4D92;
   display: flex;
