@@ -1,15 +1,17 @@
-/* ==================================================================
-   Community List Page Styles — static/community_list.css
-   ================================================================== */
 
-/* 1. Reset a few defaults */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-  
-  /* 2. Site-wide nav bar */
+
+  .site-header, .site-footer {
+    background-color: #0F4d92;
+    color: white;
+    text-align: center;
+    padding: 2em 1em;
+  }
+
   nav {
     background-color: #0F4D92;
     border-bottom: 5px solid #0F4D92;   /* thicker Yale-blue underline */
@@ -27,28 +29,24 @@
     color: #FFCC00;
   }
   
-  /* 3. Centered main content */
   main {
     max-width: 800px;   /* same width as homepage */
     margin: 3rem auto;  /* vertical spacing + auto-center */
     padding: 0 1rem;    /* small horizontal gutters */
   }
   
-  /* 4. Page title */
   main > h1 {
     font-size: 2.5rem;
     color: #333;
     margin-bottom: 1.5rem;
   }
   
-  /* 5. Community list: remove bullets & indent */
   main ul {
     list-style: none;
     padding-left: 0;
     margin-top: 2rem;
   }
   
-  /* 6. Community “cards” */
   main ul > li {
     background: #fff;
     border: 1px solid #ddd;
@@ -62,7 +60,6 @@
     background-color: #f1f5fb;
   }
   
-  /* 7. Community headings & descriptions */
   main ul > li h2 {
     font-size: 1.5rem;
     color: #0F4D92;
@@ -74,7 +71,6 @@
     margin-bottom: 1rem;
   }
   
-  /* 8. “View Posts” button — matches home.html .btn look */
   .btn {
     display: inline-block;
     background-color: #0F4D92;
@@ -89,7 +85,6 @@
     background-color: #0b3a6c;
   }
   
-  /* 9. Footer (optional, copy your home.html styles) */
   footer {
     background-color: #0F4D92;
     color: white;
@@ -99,7 +94,6 @@
     font-size: 0.9rem;
   }
   
-  /* 10. Small-screen tweak */
   @media (max-width: 768px) {
     nav a {
       display: block;
@@ -110,8 +104,6 @@
     }
   }
   
-  /* 7. Navbar (if you’re not already pulling in your global styles) */
-/* Navigation */
 nav {
   background-color: #0F4D92;
   display: flex;
@@ -178,7 +170,6 @@ nav a:hover {
   color: white;
 }
 
-/* Underline effect for active links */
 .navbar-links .active::after {
   content: '';
   position: absolute;
