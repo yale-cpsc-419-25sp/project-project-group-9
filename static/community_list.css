@@ -188,7 +188,12 @@ nav a:hover {
   bottom: -2px;
   left: 0;
 }
-
+  .site-header, .site-footer {
+    background-color: #0F4d92;
+    color: white;
+    text-align: center;
+    padding: 2em 1em;
+  }
 .navbar-links a:hover::after {
   content: '';
   position: absolute;
