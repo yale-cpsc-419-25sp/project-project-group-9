@@ -11,6 +11,13 @@
     color: #0F4D92;
     margin-bottom: 0.5rem;
   }
+
+  .site-header, .site-footer {
+    background-color: #0F4d92;
+    color: white;
+    text-align: center;
+    padding: 2em 1em;
+  }
   
   .community-header p {
     color: #666;
