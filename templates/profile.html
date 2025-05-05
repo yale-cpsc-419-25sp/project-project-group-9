@@ -67,6 +67,8 @@
       <p><strong>Residential College:</strong> {{ profile.res_college }}</p>
       <p><strong>College Year:</strong> {{ profile.college_year }}</p>
       <p><strong>Majors:</strong> {{ majors | join(', ') }}</p>
+      <h2>Bio</h2>
+      <p>{{ profile.bio }}</p>
       <h2>Affinity Groups</h2>
       <p>{{ affinity_groups | join(', ') }}</p>
       <h2>Extracurriculars</h2>
@@ -81,8 +83,6 @@
       <p>{{ offering | join(', ') }}</p>
       <h2>Roles</h2>
       <p>{{ roles | join(', ') }}</p>
-      <h2>Bio</h2>
-      <p>{{ profile.bio }}</p>
     </div>
   </div>
 </body>
