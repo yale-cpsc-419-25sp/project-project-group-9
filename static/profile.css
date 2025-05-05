@@ -326,3 +326,10 @@ nav a:hover {
       right: auto;
     }
   }
+
+.site-header, .site-footer {
+  background-color: #0F4d92;
+  color: white;
+  text-align: center;
+  padding: 2em 1em;
+}
