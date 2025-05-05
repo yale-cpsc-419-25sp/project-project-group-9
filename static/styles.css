@@ -105,11 +105,12 @@ footer {
   margin-top: 40px;
 }
 
-/*************************************************************
-* COMMUNITY PAGES STYLING
-*************************************************************/
-
-/* Main container for community pages */
+  .site-header, .site-footer {
+    background-color: #0F4d92;
+    color: white;
+    text-align: center;
+    padding: 2em 1em;
+  }
 .community-container {
   max-width: 800px;
   margin: 20px auto;
@@ -117,7 +118,6 @@ footer {
   font-family: 'Merriweather', Georgia, serif;
 }
 
-/* Headings and text */
 .community-container h1 {
   margin-top: 0;
 }
@@ -127,7 +127,6 @@ footer {
   margin-bottom: 1rem;
 }
 
-/* COMMUNITY LIST PAGE */
 .community-list {
   list-style: none;
   padding: 0;
@@ -235,7 +234,6 @@ footer {
   background-color: #2980b9;
 }
 
-/* VIEW POST PAGE */
 .post-meta {
   color: #888;
   font-size: 0.9rem;
@@ -256,14 +254,12 @@ footer {
   background-color: #2980b9;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .community-header h1 { font-size: 1.8rem; }
   .input-field, .textarea-field, select { font-size: 0.9rem; }
   .submit-btn, .view-posts-link, .create-post-btn { width: 100%; text-align: center; }
 }
 
-/* Reset */
 * {
   margin: 0;
   padding: 0;
@@ -277,7 +273,6 @@ body {
   line-height: 1.6;
 }
 
-/* Header */
 header {
   background-color: #0F4d92;
   color: #fff;
@@ -291,7 +286,6 @@ header h1 {
   font-weight: 600;
 }
 
-/* Main content */
 .container {
   width: 90%;
   max-width: 1200px;
